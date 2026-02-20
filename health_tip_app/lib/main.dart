@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/screens/fitness_screen.dart';
+import 'package:health_tip_app/screens/mental_health_screen.dart';
+import 'package:health_tip_app/screens/stress_management_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/settings_screen.dart';
@@ -24,6 +27,9 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),
         '/settings': (context) => const SettingsScreen(),
+        '/fitness': (context) => const FitnessScreen(),
+        '/mental_health' : (context) => const MentalHealthScreen(),
+        '/stress_man' : (context) => const StressManagementScreen(),
       },
     );
   }
@@ -31,15 +37,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -52,23 +49,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
+
       _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -89,6 +77,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, '/settings'),
               child: const Text('Go to Settings'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, '/fitness'),
+              child: const Text('Go to fitness'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, '/mental_health'),
+              child: const Text('Go to mental health'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, '/stress_man'),
+              child: const Text('Go to Stress management'),
             ),
           ],
         ),
