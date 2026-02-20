@@ -56,7 +56,7 @@ class FitnessScreen extends StatelessWidget {
                 children: const [
                   // Card 1
                   FitnessTipCard(
-                    picture:'assets/images/warm_up.webp',
+                    picture:'assets/images/fitness/warm_up.webp',
                     title: 'Start with warm-up',
                     description: 'Always begin your workout with 5-10 minutes of light cardio and dynamic stretches to prevent injuries.',
                   ),
@@ -64,7 +64,7 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 2
                   FitnessTipCard(
-                    picture:'assets/images/training.webp',
+                    picture:'assets/images/fitness/training.webp',
                     title: 'Strength training basics',
                     description: 'Incorporate strength training 2-3 times per week focusing on major muscle groups for balanced development.',
                   ),
@@ -72,7 +72,7 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 3
                   FitnessTipCard(
-                    picture:'assets/images/cardio.webp',
+                    picture:'assets/images/fitness/cardio.webp',
                     title: 'Cardio for heart health',
                     description: 'Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity weekly.',
                   ),
@@ -80,7 +80,7 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 4
                   FitnessTipCard(
-                    picture:'assets/images/rest-sleep.webp',
+                    picture:'assets/images/fitness/rest-sleep.webp',
                     title: 'Rest and recovery',
                     description: 'Take rest days between intense workouts to allow muscles to repair and grow stronger.',
                   ),
@@ -88,14 +88,14 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 5
                   FitnessTipCard(
-                    picture:'assets/images/01.webp',
+                    picture:'assets/images/fitness/01.webp',
                     title: 'Proper form matters',
                     description: 'Focus on correct form rather than heavy weights to maximize results and prevent injuries.',
                   ),
 
                   // Card 6
                   FitnessTipCard(
-                    picture:'assets/images/cons.webp',
+                    picture:'assets/images/fitness/cons.webp',
                     title: 'Stay consistent',
                     description: 'Create a workout schedule that you can maintain long-term rather than occasional intense sessions.',
                   ),
