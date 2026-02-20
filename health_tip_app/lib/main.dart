@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
         '/': (context) => const MyHomePage(title: 'Health Tips App'),
@@ -94,5 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+
   }
 }

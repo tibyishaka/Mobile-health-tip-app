@@ -10,20 +10,17 @@ class FitnessScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Fitness',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
+        title: Center(
+          child: Text(
+            'Fitness',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black54, size: 28),
-            onPressed: () {},
-          ),
-        ],
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -31,16 +28,27 @@ class FitnessScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search hint text
-            const Padding(
-              padding: EdgeInsets.only(bottom: 25),
-              child: Text(
-                'Search for topics',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 25),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300, // light grey background
+                  borderRadius: BorderRadius.circular(15), // rounded corners
+                ),
+                child:  TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search for topics',
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search, color: Colors.black54, size: 28),
+                      onPressed:(){}
+                    ),
+                  ),
+                )
                 ),
               ),
-            ),
+
 
             // Fitness Tips Cards
             Expanded(
@@ -48,7 +56,7 @@ class FitnessScreen extends StatelessWidget {
                 children: const [
                   // Card 1
                   FitnessTipCard(
-                    picture:'images/warm_up.webp',
+                    picture:'assets/images/warm_up.webp',
                     title: 'Start with warm-up',
                     description: 'Always begin your workout with 5-10 minutes of light cardio and dynamic stretches to prevent injuries.',
                   ),
@@ -56,7 +64,7 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 2
                   FitnessTipCard(
-                    picture:'images/training.webp',
+                    picture:'assets/images/training.webp',
                     title: 'Strength training basics',
                     description: 'Incorporate strength training 2-3 times per week focusing on major muscle groups for balanced development.',
                   ),
@@ -64,7 +72,7 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 3
                   FitnessTipCard(
-                    picture:'images/cardio.webp',
+                    picture:'assets/images/cardio.webp',
                     title: 'Cardio for heart health',
                     description: 'Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity weekly.',
                   ),
@@ -72,7 +80,7 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 4
                   FitnessTipCard(
-                    picture:'images/rest-sleep.webp',
+                    picture:'assets/images/rest-sleep.webp',
                     title: 'Rest and recovery',
                     description: 'Take rest days between intense workouts to allow muscles to repair and grow stronger.',
                   ),
@@ -80,14 +88,14 @@ class FitnessScreen extends StatelessWidget {
 
                   // Card 5
                   FitnessTipCard(
-                    picture:'images/01.webp',
+                    picture:'assets/images/01.webp',
                     title: 'Proper form matters',
                     description: 'Focus on correct form rather than heavy weights to maximize results and prevent injuries.',
                   ),
 
                   // Card 6
                   FitnessTipCard(
-                    picture:'images/cons.webp',
+                    picture:'assets/images/cons.webp',
                     title: 'Stay consistent',
                     description: 'Create a workout schedule that you can maintain long-term rather than occasional intense sessions.',
                   ),
@@ -116,47 +124,56 @@ class FitnessTipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(16),
           ),
-        ],
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(picture),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              // LEFT SIDE (TEXTS)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.green.shade700,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              // RIGHT SIDE (IMAGE)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  picture,
+                  width: 110,
+                  height: 90,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
+
     );
   }
 }
