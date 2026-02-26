@@ -61,8 +61,7 @@ flutter:
   assets:
      - assets/images/fitness/
      - assets/images/mental-health/
-
-
+     - assets/images/stress/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
