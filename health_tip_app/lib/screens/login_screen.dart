@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -84,7 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -100,7 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {},
-                    child: const Text('Forgot Password?', style: TextStyle(color: Colors.grey)),
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -122,12 +129,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       }
                     },
-                    child: const Text('Sign In', style: TextStyle(fontSize: 18)),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 Center(
-                  child: Text('Or sign in with', style: TextStyle(color: Colors.grey.shade700)),
+                  child: Text(
+                    'Or sign in with',
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -141,7 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text('Email', style: TextStyle(color: Colors.black)),
+                        child: const Text(
+                          'Email',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -153,7 +169,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text('Apple', style: TextStyle(color: Colors.black)),
+                        child: const Text(
+                          'Apple',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   ],
