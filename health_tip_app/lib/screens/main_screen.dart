@@ -41,6 +41,12 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: _currentIndex == 2
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                onPressed: () => setState(() => _currentIndex = 0),
+              )
+            : null,
         centerTitle: true,
         title: Text(
           _title,
@@ -51,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         actions: [
-          if (_currentIndex != 3)
+          if (_currentIndex == 0)
             IconButton(
               onPressed: () => setState(() => _currentIndex = 3),
               icon: Icon(

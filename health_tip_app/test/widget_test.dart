@@ -24,6 +24,7 @@ void main() {
     await tester.tap(find.text('Discover'));
     await tester.pump();
 
-    expect(find.text('Discover Wellness'), findsOneWidget);
+    expect(find.text('Search for topics'), findsOneWidget);
+    expect(find.text('Nutrition'), findsOneWidget);
   });
 }
