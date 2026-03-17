@@ -13,7 +13,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF2F2F2),
+      color: Theme.of(context).colorScheme.surface,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(10, 12, 10, 20),
         children: [

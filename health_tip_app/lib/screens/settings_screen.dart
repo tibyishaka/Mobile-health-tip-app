@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, this.embedded = false});
@@ -13,7 +14,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool newTips = false;
   bool newFeatures = false;
   bool updates = false;
-  String theme = 'System';
   String language = 'English';
 
   @override
@@ -82,14 +82,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             title: const Text('Theme'),
             subtitle: const Text('Choose your preferred theme'),
-            trailing: DropdownButton<String>(
-              value: theme,
-              items: const [
-                DropdownMenuItem(value: 'System', child: Text('System')),
-                DropdownMenuItem(value: 'Light', child: Text('Light')),
-                DropdownMenuItem(value: 'Dark', child: Text('Dark')),
-              ],
-              onChanged: (val) => setState(() => theme = val ?? 'System'),
+            trailing: ValueListenableBuilder<ThemeMode>(
+              valueListenable: appThemeMode,
+              builder: (context, mode, child) {
+                return DropdownButton<String>(
+                  value: themeModeLabel(mode),
+                  items: const [
+                    DropdownMenuItem(value: 'System', child: Text('System')),
+                    DropdownMenuItem(value: 'Light', child: Text('Light')),
+                    DropdownMenuItem(value: 'Dark', child: Text('Dark')),
+                  ],
+                  onChanged: (val) {
+                    if (val == null) return;
+                    appThemeMode.value = themeModeFromLabel(val);
+                  },
+                );
+              },
             ),
           ),
           ListTile(
@@ -121,9 +129,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               onPressed: () {
-                ScaffoldMessenger.of(
+                Navigator.of(
                   context,
-                ).showSnackBar(const SnackBar(content: Text('Logged out!')));
+                ).pushNamedAndRemoveUntil('/login', (route) => false);
               },
               child: const Text('Logout', style: TextStyle(fontSize: 18)),
             ),
@@ -137,9 +145,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF8),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAF8),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
