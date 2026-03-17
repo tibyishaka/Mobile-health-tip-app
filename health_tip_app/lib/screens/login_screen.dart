@@ -52,10 +52,11 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+      final userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
 
       final user = userCredential.user;
 
@@ -85,10 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
       // If verified, proceed
-      Navigator.pushReplacementNamed(
-        context,
-        '/getting-started',
-      );
+      Navigator.pushReplacementNamed(context, '/getting-started');
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,9 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -196,16 +194,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: _isLoading ? null : _signIn,
-                    child: _isLoading 
+                    child: _isLoading
                         ? const SizedBox(
-                            width: 24, 
-                            height: 24, 
+                            width: 24,
+                            height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(fontSize: 18),
-                          ),
+                        : const Text('Sign In', style: TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 16),

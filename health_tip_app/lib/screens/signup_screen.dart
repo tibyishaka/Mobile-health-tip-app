@@ -63,9 +63,9 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
 
       // Update display name
       await userCredential.user?.updateDisplayName(_nameController.text.trim());
@@ -78,7 +78,9 @@ class _SignupScreenState extends State<SignupScreen> {
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Account created! Please check your email to verify your account.'),
+          content: Text(
+            'Account created! Please check your email to verify your account.',
+          ),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 5),
         ),
@@ -89,13 +91,15 @@ class _SignupScreenState extends State<SignupScreen> {
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'An error occurred during sign up')),
+        SnackBar(
+          content: Text(e.message ?? 'An error occurred during sign up'),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -212,10 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text(
-                            'Sign up',
-                            style: TextStyle(fontSize: 18),
-                          ),
+                        : const Text('Sign up', style: TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 16),
