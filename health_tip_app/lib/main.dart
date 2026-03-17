@@ -8,10 +8,12 @@ import 'package:health_tip_app/screens/mindfulness_screen.dart';
 import 'package:health_tip_app/screens/nutrition_screen.dart';
 import 'package:health_tip_app/screens/signup_screen.dart';
 import 'package:health_tip_app/screens/sleep_screen.dart';
+import 'package:health_tip_app/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService.initialize();
   runApp(const HealthTipsApp());
 }
 
@@ -29,7 +31,7 @@ class HealthTipsApp extends StatelessWidget {
           themeMode: mode,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-             seedColor: const Color(0xFF4CAF82),
+              seedColor: const Color(0xFF4CAF82),
               brightness: Brightness.light,
             ),
             useMaterial3: true,
