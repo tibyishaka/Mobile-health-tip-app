@@ -15,6 +15,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool _obscurePassword = true;
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Name is required';
@@ -46,9 +54,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF8),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAF8),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: const Text(
           'Sign Up',
@@ -144,11 +152,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Signup successful!')),
-                        );
-                      }
+                      Navigator.pushReplacementNamed(
+                        context,
+                        '/getting-started',
+                      );
                     },
                     child: const Text(
                       'Sign up',

@@ -14,6 +14,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscurePassword = true;
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email is required';
@@ -38,9 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF8),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAF8),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: const Text(
           'Health Care Tips',
@@ -123,11 +130,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Login successful!')),
-                        );
-                      }
+                      Navigator.pushReplacementNamed(
+                        context,
+                        '/getting-started',
+                      );
                     },
                     child: const Text(
                       'Sign In',
@@ -174,6 +180,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(color: Colors.black),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Don\'t have an account?'),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: const Text('Sign up'),
                     ),
                   ],
                 ),

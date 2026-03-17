@@ -6,9 +6,9 @@ class FitnessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Center(
           child: Text(
@@ -20,7 +20,6 @@ class FitnessScreen extends StatelessWidget {
             ),
           ),
         ),
-
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -31,24 +30,26 @@ class FitnessScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 25),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 15,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300, // light grey background
                   borderRadius: BorderRadius.circular(15), // rounded corners
                 ),
-                child:  TextField(
+                child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search for topics',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.search, color: Colors.black54, size: 28),
-                      onPressed:(){}
+                      onPressed: () {},
                     ),
                   ),
-                )
                 ),
               ),
-
+            ),
 
             // Fitness Tips Cards
             Expanded(
@@ -56,48 +57,54 @@ class FitnessScreen extends StatelessWidget {
                 children: const [
                   // Card 1
                   FitnessTipCard(
-                    picture:'assets/images/fitness/warm_up.webp',
+                    picture: 'assets/images/fitness/warm_up.webp',
                     title: 'Start with warm-up',
-                    description: 'Always begin your workout with 5-10 minutes of light cardio and dynamic stretches to prevent injuries.',
+                    description:
+                        'Always begin your workout with 5-10 minutes of light cardio and dynamic stretches to prevent injuries.',
                   ),
                   SizedBox(height: 15),
 
                   // Card 2
                   FitnessTipCard(
-                    picture:'assets/images/fitness/training.webp',
+                    picture: 'assets/images/fitness/training.webp',
                     title: 'Strength training basics',
-                    description: 'Incorporate strength training 2-3 times per week focusing on major muscle groups for balanced development.',
+                    description:
+                        'Incorporate strength training 2-3 times per week focusing on major muscle groups for balanced development.',
                   ),
                   SizedBox(height: 15),
 
                   // Card 3
                   FitnessTipCard(
-                    picture:'assets/images/fitness/cardio.webp',
+                    picture: 'assets/images/fitness/cardio.webp',
                     title: 'Cardio for heart health',
-                    description: 'Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity weekly.',
+                    description:
+                        'Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity weekly.',
                   ),
                   SizedBox(height: 15),
 
                   // Card 4
                   FitnessTipCard(
-                    picture:'assets/images/fitness/rest-sleep.webp',
+                    picture: 'assets/images/fitness/rest-sleep.webp',
                     title: 'Rest and recovery',
-                    description: 'Take rest days between intense workouts to allow muscles to repair and grow stronger.',
+                    description:
+                        'Take rest days between intense workouts to allow muscles to repair and grow stronger.',
                   ),
                   SizedBox(height: 15),
 
                   // Card 5
                   FitnessTipCard(
-                    picture:'assets/images/fitness/01.webp',
+                    picture: 'assets/images/fitness/01.webp',
                     title: 'Proper form matters',
-                    description: 'Focus on correct form rather than heavy weights to maximize results and prevent injuries.',
+                    description:
+                        'Focus on correct form rather than heavy weights to maximize results and prevent injuries.',
                   ),
 
                   // Card 6
                   FitnessTipCard(
-                    picture:'assets/images/fitness/cons.webp',
+                    picture: 'assets/images/fitness/cons.webp',
                     title: 'Stay consistent',
-                    description: 'Create a workout schedule that you can maintain long-term rather than occasional intense sessions.',
+                    description:
+                        'Create a workout schedule that you can maintain long-term rather than occasional intense sessions.',
                   ),
                 ],
               ),
@@ -124,56 +131,54 @@ class FitnessTipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              // LEFT SIDE (TEXTS)
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.green.shade700,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // LEFT SIDE (TEXTS)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-
-              const SizedBox(width: 12),
-
-              // RIGHT SIDE (IMAGE)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  picture,
-                  width: 110,
-                  height: 90,
-                  fit: BoxFit.cover,
+                const SizedBox(height: 8),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.green.shade700,
+                    height: 1.4,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
+          const SizedBox(width: 12),
+
+          // RIGHT SIDE (IMAGE)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              picture,
+              width: 110,
+              height: 90,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

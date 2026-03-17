@@ -37,9 +37,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: _currentIndex == 2
             ? IconButton(
@@ -58,12 +58,20 @@ class _MainScreenState extends State<MainScreen> {
         ),
         actions: [
           if (_currentIndex == 0)
-            IconButton(
-              onPressed: () => setState(() => _currentIndex = 3),
-              icon: Icon(
-                Icons.settings_outlined,
-                color: Colors.grey[700],
-                size: 22,
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: InkWell(
+                onTap: () => setState(() => _currentIndex = 3),
+                borderRadius: BorderRadius.circular(20),
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: Colors.grey.shade200,
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.grey.shade700,
+                    size: 18,
+                  ),
+                ),
               ),
             ),
         ],
@@ -78,7 +86,7 @@ class _MainScreenState extends State<MainScreen> {
         selectedFontSize: 11,
         unselectedFontSize: 11,
         elevation: 10,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
