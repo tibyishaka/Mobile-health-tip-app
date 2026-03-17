@@ -10,10 +10,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:health_tip_app/main.dart';
 
 void main() {
-  testWidgets('Getting started flows to main navigation', (
+  testWidgets('Sign in flows to getting started then main navigation', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const HealthTipsApp());
+
+    expect(find.text('Health Care Tips'), findsOneWidget);
+    expect(find.text('Sign In'), findsOneWidget);
+
+    await tester.tap(find.text('Sign In'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Select Your Interests'), findsOneWidget);
     expect(find.text('Get Started'), findsOneWidget);

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/app_theme.dart';
 import 'package:health_tip_app/screens/getting_started_screen.dart';
+import 'package:health_tip_app/screens/login_screen.dart';
 import 'package:health_tip_app/screens/mindfulness_screen.dart';
 import 'package:health_tip_app/screens/nutrition_screen.dart';
+import 'package:health_tip_app/screens/signup_screen.dart';
 import 'package:health_tip_app/screens/sleep_screen.dart';
 
 void main() {
@@ -13,19 +16,38 @@ class HealthTipsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Health Tips',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4CAF82)),
-        useMaterial3: true,
-      ),
-      routes: {
-        '/nutrition': (context) => const NutritionScreen(),
-        '/sleep': (context) => const SleepScreen(),
-        '/mindfulness': (context) => const MindfulnessScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeMode,
+      builder: (context, mode, child) {
+        return MaterialApp(
+          title: 'Health Tips',
+          debugShowCheckedModeBanner: false,
+          themeMode: mode,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF4CAF82),
+              brightness: Brightness.light,
+            ),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF4CAF82),
+              brightness: Brightness.dark,
+            ),
+            useMaterial3: true,
+          ),
+          routes: {
+            '/login': (context) => const LoginScreen(),
+            '/signup': (context) => const SignupScreen(),
+            '/getting-started': (context) => const GettingStartedScreen(),
+            '/nutrition': (context) => const NutritionScreen(),
+            '/sleep': (context) => const SleepScreen(),
+            '/mindfulness': (context) => const MindfulnessScreen(),
+          },
+          home: const LoginScreen(),
+        );
       },
-      home: const GettingStartedScreen(),
     );
   }
 }

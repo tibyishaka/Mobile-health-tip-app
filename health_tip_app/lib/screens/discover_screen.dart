@@ -154,7 +154,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final filteredTopics = _filteredTopics;
 
     return Container(
-      color: const Color(0xFFF3F5F2),
+      color: Theme.of(context).colorScheme.surface,
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
       child: Column(
         children: [
