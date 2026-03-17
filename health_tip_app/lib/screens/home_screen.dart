@@ -1,40 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      children: const [
+      children: [
         _ArticleCard(
-          title: 'Mindful Eating for Stress Reduction',
-          desc:
-              'Learn how to eat more mindfully to reduce stress and improve your overall well-being.',
-          readTime: '5 min read',
+          title: l.article1Title,
+          desc: l.article1Desc,
+          readTime: l.article1ReadTime,
           imageUrl:
               'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80',
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         _ArticleCard(
-          title: 'Quick Morning Yoga Routine',
-          desc:
-              'Start your day with this energizing yoga routine to boost your mood and focus.',
-          readTime: '7 min read',
+          title: l.article2Title,
+          desc: l.article2Desc,
+          readTime: l.article2ReadTime,
           imageUrl:
               'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80',
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         _ArticleCard(
-          title: 'Hydration Habits for Better Health',
-          desc:
-              'Discover simple ways to stay hydrated throughout the day for optimal health.',
-          readTime: '6 min read',
+          title: l.article3Title,
+          desc: l.article3Desc,
+          readTime: l.article3ReadTime,
           imageUrl:
               'https://images.unsplash.com/photo-1559825481-12a05cc00344?w=800&q=80',
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -99,10 +99,14 @@ class _ArticleCard extends StatelessWidget {
         const SizedBox(height: 5),
         Text(
           desc,
-          style: TextStyle(fontSize: 13, color: Colors.grey[600], height: 1.45),
+          style: TextStyle(
+              fontSize: 13, color: Colors.grey[600], height: 1.45),
         ),
         const SizedBox(height: 5),
-        Text(readTime, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+        Text(
+          readTime,
+          style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+        ),
       ],
     );
   }
