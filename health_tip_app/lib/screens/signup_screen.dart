@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -27,39 +28,30 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Name is required';
-    }
+    final l = AppLocalizations.of(context)!;
+    if (value == null || value.isEmpty) return l.nameRequired;
     return null;
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email is required';
-    }
-    final emailPattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$';
-    if (!RegExp(emailPattern).hasMatch(value)) {
-      return 'Enter a valid email';
+    final l = AppLocalizations.of(context)!;
+    if (value == null || value.isEmpty) return l.emailRequired;
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value)) {
+      return l.enterValidEmail;
     }
     return null;
   }
 
   String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
+    final l = AppLocalizations.of(context)!;
+    if (value == null || value.isEmpty) return l.passwordRequired;
+    if (value.length < 6) return l.passwordMinLength;
     return null;
   }
 
   Future<void> _signUp() async {
     if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final userCredential = await FirebaseAuth.instance
@@ -68,13 +60,10 @@ class _SignupScreenState extends State<SignupScreen> {
             password: _passwordController.text.trim(),
           );
 
-      // Update display name
-      await userCredential.user?.updateDisplayName(_nameController.text.trim());
-
-      // Send verification email
+      await userCredential.user
+          ?.updateDisplayName(_nameController.text.trim());
       await userCredential.user?.sendEmailVerification();
 
-      // Save user details to Firestore database
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user?.uid)
@@ -86,51 +75,40 @@ class _SignupScreenState extends State<SignupScreen> {
           });
 
       if (!mounted) return;
-
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Account created! Please check your email to verify your account.',
-          ),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.accountCreated),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 5),
+          duration: const Duration(seconds: 5),
         ),
       );
-
-      // Navigate back to login
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? 'An error occurred during sign up'),
-        ),
+        SnackBar(content: Text(e.message ?? '')),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Text(
-          'Sign Up',
-          style: TextStyle(
+        title: Text(
+          l.signUp,
+          style: const TextStyle(
             color: Colors.black87,
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -157,10 +135,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
+
+                // Name
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: 'Name',
+                    labelText: l.name,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -170,10 +150,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   validator: _validateName,
                 ),
                 const SizedBox(height: 16),
+
+                // Email
                 TextFormField(
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: l.email,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -181,13 +164,15 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   validator: _validateEmail,
-                  keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
+
+                // Password
                 TextFormField(
                   controller: _passwordController,
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: l.password,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -199,17 +184,15 @@ class _SignupScreenState extends State<SignupScreen> {
                             ? Icons.visibility_off
                             : Icons.visibility,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                      onPressed: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                   validator: _validatePassword,
-                  obscureText: _obscurePassword,
                 ),
                 const SizedBox(height: 24),
+
+                // Sign up button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -228,19 +211,21 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Sign up', style: TextStyle(fontSize: 18)),
+                        : Text(l.signUp,
+                            style: const TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 16),
+
                 Center(
                   child: Text(
-                    'Or sign up with',
+                    l.orSignUpWith,
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                 ),
                 const SizedBox(height: 8),
+
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
                       child: OutlinedButton(
@@ -250,10 +235,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text(
-                          'Continue with Google',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        child: Text(l.continueWithGoogle,
+                            style: const TextStyle(color: Colors.black)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -265,24 +248,22 @@ class _SignupScreenState extends State<SignupScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text(
-                          'Continue with Apple',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        child: Text(l.continueWithApple,
+                            style: const TextStyle(color: Colors.black)),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account?'),
+                    Text(l.alreadyHaveAccount),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      child: const Text('Sign in'),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/login'),
+                      child: Text(l.signIn),
                     ),
                   ],
                 ),

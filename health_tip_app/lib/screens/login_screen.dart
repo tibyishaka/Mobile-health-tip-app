@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,30 +24,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email is required';
-    }
+  String? _validateEmail(String? value, AppLocalizations l) {
+    if (value == null || value.isEmpty) return l.emailRequired;
     final emailPattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$';
-    if (!RegExp(emailPattern).hasMatch(value)) {
-      return 'Enter a valid email';
-    }
+    if (!RegExp(emailPattern).hasMatch(value)) return l.enterValidEmail;
     return null;
   }
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
+  String? _validatePassword(String? value, AppLocalizations l) {
+    if (value == null || value.isEmpty) return l.passwordRequired;
+    if (value.length < 6) return l.passwordMinLength;
     return null;
   }
 
-  Future<void> _signIn() async {
+  Future<void> _signIn(AppLocalizations l) async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isLoading = true);
 
     try {
@@ -62,15 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Please verify your email before logging in.'),
+            content: Text(l.pleaseVerifyEmail),
             action: SnackBarAction(
-              label: 'Resend Email',
+              label: l.resendEmail,
               textColor: Colors.white,
               onPressed: () async {
                 await user.sendEmailVerification();
                 if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Verification email sent!')),
+                  SnackBar(content: Text(l.verificationEmailSent)),
                 );
               },
             ),
@@ -85,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'An error occurred during login')),
+        SnackBar(content: Text(e.message ?? '')),
       );
     } catch (e) {
       if (!mounted) return;
@@ -96,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _showForgotPasswordDialog() async {
+  Future<void> _showForgotPasswordDialog(AppLocalizations l) async {
     final resetEmailController = TextEditingController(
       text: _emailController.text.trim(),
     );
@@ -114,12 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               title: Row(
-                children: const [
-                  Icon(Icons.lock_reset, color: Color(0xFF4CAF82)),
-                  SizedBox(width: 10),
+                children: [
+                  const Icon(Icons.lock_reset, color: Color(0xFF4CAF82)),
+                  const SizedBox(width: 10),
                   Text(
-                    'Reset Password',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    l.resetPassword,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -127,9 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Enter the email address linked to your account. We\'ll send you a link to reset your password.',
-                    style: TextStyle(fontSize: 13, color: Colors.black54),
+                  Text(
+                    l.resetPasswordDesc,
+                    style: const TextStyle(fontSize: 13, color: Colors.black54),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -137,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.emailAddress,
                     enabled: !isSending,
                     decoration: InputDecoration(
-                      labelText: 'Email address',
+                      labelText: l.emailAddress,
                       prefixIcon: const Icon(Icons.email_outlined),
                       filled: true,
                       fillColor: Colors.grey.shade100,
@@ -147,9 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Color(0xFF4CAF82),
-                          width: 2,
-                        ),
+                            color: Color(0xFF4CAF82), width: 2),
                       ),
                     ),
                   ),
@@ -161,10 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextButton(
                   onPressed:
                       isSending ? null : () => Navigator.pop(dialogContext),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.black54),
-                  ),
+                  child: Text(l.cancel,
+                      style: const TextStyle(color: Colors.black54)),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -174,9 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
+                        horizontal: 20, vertical: 12),
                   ),
                   onPressed: isSending
                       ? null
@@ -185,9 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           if (email.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter your email address.'),
-                              ),
+                              SnackBar(content: Text(l.enterEmailFirst)),
                             );
                             return;
                           }
@@ -195,9 +180,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           final emailPattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$';
                           if (!RegExp(emailPattern).hasMatch(email)) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter a valid email address.'),
-                              ),
+                              SnackBar(
+                                  content: Text(l.enterValidEmailFirst)),
                             );
                             return;
                           }
@@ -213,9 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(
-                                  'Password reset link sent to $email.\nCheck your inbox (and spam folder).',
-                                ),
+                                content: Text(l.resetEmailSent(email)),
                                 backgroundColor: const Color(0xFF4CAF82),
                                 duration: const Duration(seconds: 6),
                               ),
@@ -227,19 +209,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             String message;
                             switch (e.code) {
                               case 'user-not-found':
-                                message =
-                                    'No account found with that email address.';
+                                message = l.noAccountFound;
                                 break;
                               case 'invalid-email':
-                                message = 'The email address is not valid.';
+                                message = l.emailInvalid;
                                 break;
                               case 'too-many-requests':
-                                message =
-                                    'Too many attempts. Please try again later.';
+                                message = l.tooManyRequests;
                                 break;
                               default:
-                                message =
-                                    e.message ?? 'Failed to send reset email.';
+                                message = e.message ?? l.failedToSendReset;
                             }
 
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -258,14 +237,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
+                              strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text(
-                          'Send Reset Link',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
+                      : Text(l.sendResetLink,
+                          style:
+                              const TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ],
             );
@@ -279,14 +255,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Text(
-          'Health Care Tips',
-          style: TextStyle(
+        title: Text(
+          l.healthCareTips,
+          style: const TextStyle(
             color: Colors.black87,
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -305,21 +283,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: l.email,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  validator: _validateEmail,
+                  validator: (v) => _validateEmail(v, l),
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: l.password,
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -335,17 +313,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
-                  validator: _validatePassword,
+                  validator: (v) => _validatePassword(v, l),
                   obscureText: _obscurePassword,
                 ),
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: _showForgotPasswordDialog,
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: Color(0xFF4CAF82)),
+                    onPressed: () => _showForgotPasswordDialog(l),
+                    child: Text(
+                      l.forgotPassword,
+                      style: const TextStyle(color: Color(0xFF4CAF82)),
                     ),
                   ),
                 ),
@@ -361,23 +339,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: _isLoading ? null : _signIn,
+                    onPressed: _isLoading ? null : () => _signIn(l),
                     child: _isLoading
                         ? const SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(fontSize: 18),
-                          ),
+                        : Text(l.signIn,
+                            style: const TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 16),
                 Center(
                   child: Text(
-                    'Or sign in with',
+                    l.orSignInWith,
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                 ),
@@ -392,10 +368,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text(
-                          'Email',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        child: Text(l.email,
+                            style: const TextStyle(color: Colors.black)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -407,10 +381,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text(
-                          'Apple',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        child: Text(l.apple,
+                            style: const TextStyle(color: Colors.black)),
                       ),
                     ),
                   ],
@@ -419,11 +391,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?"),
+                    Text(l.dontHaveAccount),
                     TextButton(
                       onPressed: () =>
                           Navigator.pushNamed(context, '/signup'),
-                      child: const Text('Sign up'),
+                      child: Text(l.signUp),
                     ),
                   ],
                 ),

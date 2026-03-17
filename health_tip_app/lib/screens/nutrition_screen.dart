@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class _NutritionTip {
   final String picture;
@@ -19,6 +20,59 @@ class _NutritionTip {
   }
 }
 
+List<_NutritionTip> _buildTips(AppLocalizations l) => [
+      _NutritionTip(
+        picture: 'assets/images/fitness/cons.webp',
+        title: l.nutritionTip1Title,
+        description: l.nutritionTip1Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/01.webp',
+        title: l.nutritionTip2Title,
+        description: l.nutritionTip2Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/cardio.webp',
+        title: l.nutritionTip3Title,
+        description: l.nutritionTip3Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/training.webp',
+        title: l.nutritionTip4Title,
+        description: l.nutritionTip4Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/warm_up.webp',
+        title: l.nutritionTip5Title,
+        description: l.nutritionTip5Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/rest-sleep.webp',
+        title: l.nutritionTip6Title,
+        description: l.nutritionTip6Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/cons.webp',
+        title: l.nutritionTip7Title,
+        description: l.nutritionTip7Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/01.webp',
+        title: l.nutritionTip8Title,
+        description: l.nutritionTip8Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/training.webp',
+        title: l.nutritionTip9Title,
+        description: l.nutritionTip9Desc,
+      ),
+      _NutritionTip(
+        picture: 'assets/images/fitness/cardio.webp',
+        title: l.nutritionTip10Title,
+        description: l.nutritionTip10Desc,
+      ),
+    ];
+
 class NutritionScreen extends StatefulWidget {
   const NutritionScreen({super.key});
 
@@ -30,82 +84,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  static const List<_NutritionTip> _allTips = [
-    _NutritionTip(
-      picture: 'assets/images/fitness/cons.webp',
-      title: 'Increase fiber intake',
-      description:
-          'Fiber helps regulate digestion and keeps you feeling full longer. '
-          'Include fruits, vegetables, legumes, and whole grains in your daily meals.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/01.webp',
-      title: 'Build balanced meals',
-      description:
-          'Fill your plate with vegetables, lean protein, healthy fats, and '
-          'complex carbs to ensure you get all the nutrients your body needs.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/cardio.webp',
-      title: 'Stay hydrated',
-      description:
-          'Drink water consistently throughout the day to support energy, '
-          'focus, and overall body function. Aim for at least 8 glasses daily.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/training.webp',
-      title: 'Choose whole grains',
-      description:
-          'Prefer whole grains like oats, brown rice, and quinoa over refined '
-          'grains for lasting energy and improved digestive health.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/warm_up.webp',
-      title: 'Eat more fruits and vegetables',
-      description:
-          'Aim for at least five servings of fruits and vegetables a day to '
-          'supply your body with essential vitamins, minerals, and antioxidants.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/rest-sleep.webp',
-      title: 'Limit processed foods',
-      description:
-          'Reduce your intake of ultra-processed snacks and fast food, which '
-          'are often high in sugar, sodium, and unhealthy fats.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/cons.webp',
-      title: 'Control portion sizes',
-      description:
-          'Be mindful of how much you eat at each meal. Using smaller plates '
-          'and eating slowly can help prevent overeating.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/01.webp',
-      title: 'Include healthy fats',
-      description:
-          'Incorporate sources of healthy fats such as avocados, nuts, seeds, '
-          'and olive oil to support brain health and hormone production.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/training.webp',
-      title: 'Prioritise lean protein',
-      description:
-          'Choose lean protein sources like chicken, fish, tofu, eggs, and '
-          'legumes to support muscle repair and keep you satiated.',
-    ),
-    _NutritionTip(
-      picture: 'assets/images/fitness/cardio.webp',
-      title: 'Reduce added sugar',
-      description:
-          'Cut back on sugary drinks, desserts, and packaged foods. Excess '
-          'sugar can lead to weight gain, energy crashes, and inflammation.',
-    ),
-  ];
-
-  List<_NutritionTip> get _filteredTips =>
-      _allTips.where((tip) => tip.matches(_searchQuery)).toList();
-
   @override
   void dispose() {
     _searchController.dispose();
@@ -114,21 +92,23 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filteredTips;
+    final l = AppLocalizations.of(context)!;
+    final allTips = _buildTips(l);
+    final filtered =
+        allTips.where((t) => t.matches(_searchQuery)).toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Center(
-          child: Text(
-            'Nutrition',
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+        centerTitle: true,
+        title: Text(
+          l.topicNutrition,
+          style: const TextStyle(
+            color: Colors.black87,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -137,7 +117,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
+            // ── Search bar ────────────────────────────────────────────────
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
@@ -147,7 +127,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                 controller: _searchController,
                 onChanged: (value) => setState(() => _searchQuery = value),
                 decoration: InputDecoration(
-                  hintText: 'Search nutrition tips…',
+                  hintText: l.searchNutritionHint,
                   hintStyle:
                       const TextStyle(color: Colors.grey, fontSize: 16),
                   contentPadding: const EdgeInsets.symmetric(
@@ -169,16 +149,18 @@ class _NutritionScreenState extends State<NutritionScreen> {
                 ),
               ),
             ),
+
             const SizedBox(height: 20),
 
-            // Results label
+            // ── Result count ──────────────────────────────────────────────
             if (_searchQuery.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Text(
                   filtered.isEmpty
-                      ? 'No results for "$_searchQuery"'
-                      : '${filtered.length} result${filtered.length == 1 ? '' : 's'} for "$_searchQuery"',
+                      ? l.noResultsFor(_searchQuery)
+                      : l.searchResultsCount(
+                          filtered.length, _searchQuery),
                   style: TextStyle(
                     fontSize: 13,
                     color: filtered.isEmpty
@@ -189,7 +171,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                 ),
               ),
 
-            // Tips list
+            // ── Tip list / empty state ────────────────────────────────────
             Expanded(
               child: filtered.isEmpty
                   ? Center(
@@ -200,7 +182,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                               size: 56, color: Colors.grey.shade400),
                           const SizedBox(height: 12),
                           Text(
-                            'No nutrition tips found.',
+                            l.noTipsFound,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -209,7 +191,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Try a different keyword.',
+                            l.tryDifferentKeyword,
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.grey.shade400,
@@ -224,10 +206,11 @@ class _NutritionScreenState extends State<NutritionScreen> {
                           const SizedBox(height: 15),
                       itemBuilder: (context, index) {
                         final tip = filtered[index];
-                        return NutritionTipCard(
+                        return _NutritionTipCard(
                           picture: tip.picture,
                           title: tip.title,
                           description: tip.description,
+                          searchQuery: _searchQuery,
                         );
                       },
                     ),
@@ -239,17 +222,20 @@ class _NutritionScreenState extends State<NutritionScreen> {
   }
 }
 
-class NutritionTipCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final String picture;
+// ── Tip card ─────────────────────────────────────────────────────────────────
 
-  const NutritionTipCard({
-    super.key,
+class _NutritionTipCard extends StatelessWidget {
+  const _NutritionTipCard({
+    required this.picture,
     required this.title,
     required this.description,
-    required this.picture,
+    required this.searchQuery,
   });
+
+  final String picture;
+  final String title;
+  final String description;
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -262,22 +248,25 @@ class NutritionTipCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Text content ───────────────────────────────────────────────
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
+                _HighlightedText(
+                  text: title,
+                  query: searchQuery,
+                  baseStyle: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: TextStyle(
+                _HighlightedText(
+                  text: description,
+                  query: searchQuery,
+                  baseStyle: TextStyle(
                     fontSize: 14,
                     color: Colors.green.shade700,
                     height: 1.4,
@@ -287,6 +276,8 @@ class NutritionTipCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
+
+          // ── Thumbnail ──────────────────────────────────────────────────
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
@@ -294,7 +285,7 @@ class NutritionTipCard extends StatelessWidget {
               width: 110,
               height: 90,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
+              errorBuilder: (_, _, _) => Container(
                 width: 110,
                 height: 90,
                 decoration: BoxDecoration(
@@ -309,5 +300,52 @@ class NutritionTipCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// ── Highlight matching substrings ─────────────────────────────────────────────
+
+class _HighlightedText extends StatelessWidget {
+  const _HighlightedText({
+    required this.text,
+    required this.query,
+    required this.baseStyle,
+  });
+
+  final String text;
+  final String query;
+  final TextStyle baseStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    if (query.isEmpty) return Text(text, style: baseStyle);
+
+    final lowerText = text.toLowerCase();
+    final lowerQuery = query.toLowerCase();
+    final spans = <TextSpan>[];
+    int start = 0;
+
+    while (true) {
+      final index = lowerText.indexOf(lowerQuery, start);
+      if (index == -1) {
+        spans.add(TextSpan(text: text.substring(start), style: baseStyle));
+        break;
+      }
+      if (index > start) {
+        spans.add(TextSpan(
+            text: text.substring(start, index), style: baseStyle));
+      }
+      spans.add(TextSpan(
+        text: text.substring(index, index + query.length),
+        style: baseStyle.copyWith(
+          backgroundColor: const Color(0xFFFFE082),
+          color: Colors.black87,
+          fontWeight: FontWeight.bold,
+        ),
+      ));
+      start = index + query.length;
+    }
+
+    return RichText(text: TextSpan(children: spans));
   }
 }

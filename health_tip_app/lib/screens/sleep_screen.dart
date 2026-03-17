@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class _SleepTipData {
   final String picture;
@@ -19,56 +20,48 @@ class _SleepTipData {
   }
 }
 
-const List<_SleepTipData> _allSleepTips = [
-  _SleepTipData(
-    picture: 'assets/images/fitness/rest-sleep.webp',
-    title: 'Establish a bedtime routine',
-    description:
-        'Go to bed and wake up at the same time daily, including weekends.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/mental-health/detox.webp',
-    title: 'Limit screen time before bed',
-    description:
-        'Avoid screens at least one hour before sleep to reduce blue light exposure.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/fitness/warm_up.webp',
-    title: 'Create a wind-down routine',
-    description:
-        'Use calming habits like light stretching or reading before bedtime.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/fitness/01.webp',
-    title: 'Keep your room cool',
-    description:
-        'A cool, dark room helps you fall asleep faster and sleep more deeply.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/stress/deep-breathing.webp',
-    title: 'Try deep breathing exercises',
-    description:
-        'Slow, deep breaths before bed activate the parasympathetic nervous system and promote relaxation.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/mental-health/practice.webp',
-    title: 'Avoid caffeine late in the day',
-    description:
-        'Caffeine can stay in your system for 6–8 hours, so avoid it after 2 PM for better sleep quality.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/stress/time-management.webp',
-    title: 'Keep a sleep journal',
-    description:
-        'Track your sleep patterns and habits to identify what helps or hinders your rest.',
-  ),
-  _SleepTipData(
-    picture: 'assets/images/mental-health/self-care-routine.webp',
-    title: 'Limit naps during the day',
-    description:
-        'If you must nap, keep it under 30 minutes and avoid napping late in the afternoon.',
-  ),
-];
+List<_SleepTipData> _buildSleepTips(AppLocalizations l) => [
+      _SleepTipData(
+        picture: 'assets/images/fitness/rest-sleep.webp',
+        title: l.sleepTip1Title,
+        description: l.sleepTip1Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/mental-health/detox.webp',
+        title: l.sleepTip2Title,
+        description: l.sleepTip2Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/fitness/warm_up.webp',
+        title: l.sleepTip3Title,
+        description: l.sleepTip3Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/fitness/01.webp',
+        title: l.sleepTip4Title,
+        description: l.sleepTip4Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/stress/deep-breathing.webp',
+        title: l.sleepTip5Title,
+        description: l.sleepTip5Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/mental-health/practice.webp',
+        title: l.sleepTip6Title,
+        description: l.sleepTip6Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/stress/time-management.webp',
+        title: l.sleepTip7Title,
+        description: l.sleepTip7Desc,
+      ),
+      _SleepTipData(
+        picture: 'assets/images/mental-health/self-care-routine.webp',
+        title: l.sleepTip8Title,
+        description: l.sleepTip8Desc,
+      ),
+    ];
 
 class SleepScreen extends StatefulWidget {
   const SleepScreen({super.key});
@@ -87,12 +80,7 @@ class _SleepScreenState extends State<SleepScreen> {
     super.dispose();
   }
 
-  List<_SleepTipData> get _filteredTips =>
-      _allSleepTips.where((tip) => tip.matches(_searchQuery)).toList();
-
-  void _onSearchChanged(String value) {
-    setState(() => _searchQuery = value);
-  }
+  void _onSearchChanged(String value) => setState(() => _searchQuery = value);
 
   void _clearSearch() {
     _searchController.clear();
@@ -101,21 +89,23 @@ class _SleepScreenState extends State<SleepScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filteredTips;
+    final l = AppLocalizations.of(context)!;
+    final allTips = _buildSleepTips(l);
+    final filtered =
+        allTips.where((t) => t.matches(_searchQuery)).toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Center(
-          child: Text(
-            'Sleep',
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+        centerTitle: true,
+        title: Text(
+          l.topicSleep,
+          style: const TextStyle(
+            color: Colors.black87,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -126,7 +116,8 @@ class _SleepScreenState extends State<SleepScreen> {
           children: [
             // ── Search bar ──────────────────────────────────────────────────
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(15),
@@ -135,7 +126,7 @@ class _SleepScreenState extends State<SleepScreen> {
                 controller: _searchController,
                 onChanged: _onSearchChanged,
                 decoration: InputDecoration(
-                  hintText: 'Search sleep tips…',
+                  hintText: l.searchSleepHint,
                   hintStyle:
                       const TextStyle(color: Colors.grey, fontSize: 15),
                   border: InputBorder.none,
@@ -158,8 +149,9 @@ class _SleepScreenState extends State<SleepScreen> {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Text(
                   filtered.isEmpty
-                      ? 'No results for "$_searchQuery"'
-                      : '${filtered.length} result${filtered.length == 1 ? '' : 's'} for "$_searchQuery"',
+                      ? l.noResultsFor(_searchQuery)
+                      : l.searchResultsCount(
+                          filtered.length, _searchQuery),
                   style: TextStyle(
                     fontSize: 13,
                     color: filtered.isEmpty
@@ -181,7 +173,7 @@ class _SleepScreenState extends State<SleepScreen> {
                               size: 60, color: Colors.grey.shade400),
                           const SizedBox(height: 16),
                           Text(
-                            'No sleep tips found.',
+                            l.noTipsFound,
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
@@ -190,7 +182,7 @@ class _SleepScreenState extends State<SleepScreen> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Try searching with different keywords.',
+                            l.tryDifferentKeyword,
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.grey.shade500,
@@ -221,6 +213,8 @@ class _SleepScreenState extends State<SleepScreen> {
   }
 }
 
+// ── Tip card ─────────────────────────────────────────────────────────────────
+
 class _SleepTipCard extends StatelessWidget {
   final String title;
   final String description;
@@ -234,44 +228,49 @@ class _SleepTipCard extends StatelessWidget {
     this.searchQuery = '',
   });
 
-  /// Highlights matching text segments in green.
-  List<TextSpan> _highlight(String text, String query) {
-    if (query.isEmpty) {
-      return [TextSpan(text: text)];
-    }
+  List<TextSpan> _highlight(String text, String query, TextStyle base) {
+    if (query.isEmpty) return [TextSpan(text: text, style: base)];
 
     final spans = <TextSpan>[];
-    final lowerText = text.toLowerCase();
-    final lowerQuery = query.toLowerCase();
+    final lower = text.toLowerCase();
+    final lowerQ = query.toLowerCase();
     int start = 0;
 
     while (true) {
-      final index = lowerText.indexOf(lowerQuery, start);
-      if (index == -1) {
-        spans.add(TextSpan(text: text.substring(start)));
+      final idx = lower.indexOf(lowerQ, start);
+      if (idx == -1) {
+        spans.add(TextSpan(text: text.substring(start), style: base));
         break;
       }
-      if (index > start) {
-        spans.add(TextSpan(text: text.substring(start, index)));
+      if (idx > start) {
+        spans.add(TextSpan(text: text.substring(start, idx), style: base));
       }
-      spans.add(
-        TextSpan(
-          text: text.substring(index, index + query.length),
-          style: const TextStyle(
-            backgroundColor: Color(0xFFB2DFDB),
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-          ),
+      spans.add(TextSpan(
+        text: text.substring(idx, idx + query.length),
+        style: base.copyWith(
+          backgroundColor: const Color(0xFFB2DFDB),
+          color: Colors.black87,
+          fontWeight: FontWeight.bold,
         ),
-      );
-      start = index + query.length;
+      ));
+      start = idx + query.length;
     }
-
     return spans;
   }
 
   @override
   Widget build(BuildContext context) {
+    const titleStyle = TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: Colors.black87,
+    );
+    final descStyle = TextStyle(
+      fontSize: 14,
+      color: Colors.green.shade700,
+      height: 1.4,
+    );
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -281,38 +280,25 @@ class _SleepTipCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Text content ───────────────────────────────────────────────
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
-                    children: _highlight(title, searchQuery),
+                    children: _highlight(title, searchQuery, titleStyle),
                   ),
                 ),
                 const SizedBox(height: 8),
                 RichText(
                   text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.green.shade700,
-                      height: 1.4,
-                    ),
-                    children: _highlight(description, searchQuery),
+                    children: _highlight(description, searchQuery, descStyle),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 12),
-
-          // ── Thumbnail ──────────────────────────────────────────────────
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(

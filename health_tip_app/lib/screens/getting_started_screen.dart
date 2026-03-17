@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/screens/main_screen.dart';
 
 class GettingStartedScreen extends StatefulWidget {
@@ -9,28 +10,27 @@ class GettingStartedScreen extends StatefulWidget {
 }
 
 class _GettingStartedScreenState extends State<GettingStartedScreen> {
-  final Set<String> _selectedTopics = {'Mental Health'};
-
-  static const List<_InterestTopic> _topics = [
-    _InterestTopic('Nutrition', 'assets/images/fitness/cons.webp'),
-    _InterestTopic('Sleep', 'assets/images/fitness/rest-sleep.webp'),
-    _InterestTopic('Fitness', 'assets/images/fitness/training.webp'),
-    _InterestTopic(
-      'Mental Health',
-      'assets/images/mental-health/practice.webp',
-    ),
-    _InterestTopic(
-      'Stress Management',
-      'assets/images/stress/deep-breathing.webp',
-    ),
-    _InterestTopic(
-      'Mindfulness',
-      'assets/images/mental-health/self-care-routine.webp',
-    ),
-  ];
+  final Set<String> _selectedKeys = {'topicMentalHealth'};
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
+    final List<_InterestTopic> topics = [
+      _InterestTopic('topicNutrition', l.topicNutrition,
+          'assets/images/fitness/cons.webp'),
+      _InterestTopic('topicSleep', l.topicSleep,
+          'assets/images/fitness/rest-sleep.webp'),
+      _InterestTopic('topicFitness', l.topicFitness,
+          'assets/images/fitness/training.webp'),
+      _InterestTopic('topicMentalHealth', l.topicMentalHealth,
+          'assets/images/mental-health/practice.webp'),
+      _InterestTopic('topicStressManagement', l.topicStressManagement,
+          'assets/images/stress/deep-breathing.webp'),
+      _InterestTopic('topicMindfulness', l.topicMindfulness,
+          'assets/images/mental-health/self-care-routine.webp'),
+    ];
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -38,13 +38,14 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
           padding: const EdgeInsets.fromLTRB(10, 8, 10, 12),
           child: Column(
             children: [
-              const Text(
-                'Select Your Interests',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              Text(
+                l.selectInterests,
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 6),
               Text(
-                'Choose topics that interest you to customize your app experience',
+                l.chooseTopicsDesc,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 8,
@@ -55,25 +56,26 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
               const SizedBox(height: 10),
               Expanded(
                 child: GridView.builder(
-                  itemCount: _topics.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  itemCount: topics.length,
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 10,
                     childAspectRatio: 0.86,
                   ),
                   itemBuilder: (context, index) {
-                    final topic = _topics[index];
-                    final selected = _selectedTopics.contains(topic.title);
+                    final topic = topics[index];
+                    final selected = _selectedKeys.contains(topic.key);
                     return _InterestCard(
                       topic: topic,
                       selected: selected,
                       onTap: () {
                         setState(() {
                           if (selected) {
-                            _selectedTopics.remove(topic.title);
+                            _selectedKeys.remove(topic.key);
                           } else {
-                            _selectedTopics.add(topic.title);
+                            _selectedKeys.add(topic.key);
                           }
                         });
                       },
@@ -96,12 +98,14 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                   ),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const MainScreen()),
+                      MaterialPageRoute(
+                          builder: (_) => const MainScreen()),
                     );
                   },
-                  child: const Text(
-                    'Get Started',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                  child: Text(
+                    l.getStarted,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -154,10 +158,8 @@ class _InterestCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Center(
-                        child: Icon(
-                          Icons.image_outlined,
-                          color: Colors.black45,
-                        ),
+                        child: Icon(Icons.image_outlined,
+                            color: Colors.black45),
                       );
                     },
                   ),
@@ -168,7 +170,8 @@ class _InterestCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             topic.title,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -177,8 +180,9 @@ class _InterestCard extends StatelessWidget {
 }
 
 class _InterestTopic {
-  const _InterestTopic(this.title, this.imagePath);
+  const _InterestTopic(this.key, this.title, this.imagePath);
 
+  final String key;
   final String title;
   final String imagePath;
 }

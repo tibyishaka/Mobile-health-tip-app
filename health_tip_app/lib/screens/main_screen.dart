@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/screens/daily_tips_screen.dart';
 import 'package:health_tip_app/screens/discover_screen.dart';
 import 'package:health_tip_app/screens/home_screen.dart';
@@ -21,21 +22,17 @@ class _MainScreenState extends State<MainScreen> {
     SettingsScreen(embedded: true),
   ];
 
-  String get _title {
-    switch (_currentIndex) {
-      case 1:
-        return 'Discover';
-      case 2:
-        return 'Daily Tips';
-      case 3:
-        return 'Settings';
-      default:
-        return 'Health Tips';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
+    final titles = [
+      l.appTitle,
+      l.navDiscover,
+      l.navDailyTips,
+      l.navSettings,
+    ];
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -49,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
             : null,
         centerTitle: true,
         title: Text(
-          _title,
+          titles[_currentIndex],
           style: const TextStyle(
             color: Colors.black87,
             fontSize: 18,
@@ -87,26 +84,26 @@ class _MainScreenState extends State<MainScreen> {
         unselectedFontSize: 11,
         elevation: 10,
         backgroundColor: Theme.of(context).colorScheme.surface,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home_outlined),
+            activeIcon: const Icon(Icons.home),
+            label: l.navHome,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
-            label: 'Discover',
+            icon: const Icon(Icons.explore_outlined),
+            activeIcon: const Icon(Icons.explore),
+            label: l.navDiscover,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb_outline),
-            activeIcon: Icon(Icons.lightbulb),
-            label: 'Daily Tips',
+            icon: const Icon(Icons.lightbulb_outline),
+            activeIcon: const Icon(Icons.lightbulb),
+            label: l.navDailyTips,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: const Icon(Icons.settings_outlined),
+            activeIcon: const Icon(Icons.settings),
+            label: l.navSettings,
           ),
         ],
       ),

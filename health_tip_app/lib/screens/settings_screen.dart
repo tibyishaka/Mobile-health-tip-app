@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/app_theme.dart';
+import 'package:health_tip_app/app_locale.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, this.embedded = false});
-
   final bool embedded;
 
   @override
@@ -14,25 +16,36 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // ─── Notification toggles ────────────────────────────────────────────────────
+  // ── Notification toggles ────────────────────────────────────────────────────
   bool _newTips = false;
   bool _newFeatures = false;
   bool _updates = false;
 
-  // ─── App preferences ─────────────────────────────────────────────────────────
-  String _language = 'English';
+  // ── Language ─────────────────────────────────────────────────────────────────
+  // Stored as locale code: 'en', 'fr', 'es'
+  String _langCode = 'en';
 
-  // ─── Profile ─────────────────────────────────────────────────────────────────
+  // Native display names – always shown in their own language so the user can
+  // find them regardless of the current app language.
+  static const Map<String, String> _languages = {
+    'en': 'English',
+    'fr': 'Français',
+    'es': 'Español',
+  };
+
+  // ── Profile ──────────────────────────────────────────────────────────────────
   User? _currentUser;
   Map<String, dynamic>? _userData;
   bool _loadingProfile = true;
   bool _isLoggingOut = false;
 
-  // ─── Keys for SharedPreferences ──────────────────────────────────────────────
-  static const String _keyNewTips = 'notif_new_tips';
+  // ── SharedPreferences keys ───────────────────────────────────────────────────
+  static const String _keyNewTips     = 'notif_new_tips';
   static const String _keyNewFeatures = 'notif_new_features';
-  static const String _keyUpdates = 'notif_updates';
-  static const String _keyLanguage = 'app_language';
+  static const String _keyUpdates     = 'notif_updates';
+  static const String _keyLanguage    = 'app_language';
+
+  // ── Lifecycle ────────────────────────────────────────────────────────────────
 
   @override
   void initState() {
@@ -41,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadPreferences();
   }
 
-  // ─── Loaders ─────────────────────────────────────────────────────────────────
+  // ── Data loaders ─────────────────────────────────────────────────────────────
 
   Future<void> _loadUserProfile() async {
     _currentUser = FirebaseAuth.instance.currentUser;
@@ -56,10 +69,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           .collection('users')
           .doc(_currentUser!.uid)
           .get();
-
       if (mounted) {
         setState(() {
-          _userData = doc.exists ? doc.data() : null;
+          _userData      = doc.exists ? doc.data() : null;
           _loadingProfile = false;
         });
       }
@@ -72,50 +84,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        _newTips = prefs.getBool(_keyNewTips) ?? false;
+        _newTips     = prefs.getBool(_keyNewTips)     ?? false;
         _newFeatures = prefs.getBool(_keyNewFeatures) ?? false;
-        _updates = prefs.getBool(_keyUpdates) ?? false;
-        _language = prefs.getString(_keyLanguage) ?? 'English';
+        _updates     = prefs.getBool(_keyUpdates)     ?? false;
+        _langCode    = prefs.getString(_keyLanguage)  ?? 'en';
       });
     }
   }
 
-  // ─── Savers ──────────────────────────────────────────────────────────────────
+  // ── Savers ───────────────────────────────────────────────────────────────────
 
   Future<void> _saveNotifPref(String key, bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(key, value);
   }
 
-  Future<void> _saveLanguage(String lang) async {
+  Future<void> _changeLanguage(String code) async {
+    if (code == _langCode) return;
+    setState(() => _langCode = code);
+    // 1. Update the global notifier → MaterialApp rebuilds with new locale
+    appLocale.value = Locale(code);
+    // 2. Persist so the choice survives restarts
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyLanguage, lang);
+    await prefs.setString(_keyLanguage, code);
   }
 
-  // ─── Logout ──────────────────────────────────────────────────────────────────
+  // ── Logout ───────────────────────────────────────────────────────────────────
 
   Future<void> _logout() async {
+    final l = AppLocalizations.of(context)!;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Log Out'),
-        content: const Text('Are you sure you want to log out?'),
+        title: Text(l.logOutConfirmTitle),
+        content: Text(l.logOutConfirmBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel', style: TextStyle(color: Colors.black54)),
+            child: Text(l.cancel,
+                style: const TextStyle(color: Colors.black54)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+                  borderRadius: BorderRadius.circular(8)),
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Log Out'),
+            child: Text(l.logOut),
           ),
         ],
       ),
@@ -133,12 +152,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
       setState(() => _isLoggingOut = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logout failed: ${e.toString()}')),
+        SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.logoutFailed(e.toString()))),
       );
     }
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────────────────────────
 
   String get _displayName =>
       _userData?['name'] as String? ??
@@ -150,25 +171,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _currentUser?.email ??
       '';
 
-  String _formatMemberSince(dynamic timestamp) {
+  String _formatMemberSince(dynamic timestamp, AppLocalizations l) {
     if (timestamp == null) return '';
-    if (timestamp is Timestamp) {
-      final dt = timestamp.toDate();
-      const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-      ];
-      return 'Member since ${months[dt.month - 1]} ${dt.year}';
-    }
-    return '';
+    if (timestamp is! Timestamp) return '';
+    final dt       = timestamp.toDate();
+    final dateStr  = DateFormat('MMM yyyy', _langCode).format(dt);
+    return l.memberSince(dateStr);
   }
 
-  // ─── Build ───────────────────────────────────────────────────────────────────
+  // ── Build ─────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     final content = SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -178,8 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ? const Padding(
                     padding: EdgeInsets.symmetric(vertical: 32),
                     child: CircularProgressIndicator(
-                      color: Color(0xFF4CAF82),
-                    ),
+                        color: Color(0xFF4CAF82)),
                   )
                 : Column(
                     children: [
@@ -198,29 +215,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Text(
-                        _displayName,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text(_displayName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
-                      Text(
-                        _displayEmail,
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
-                        ),
-                      ),
+                      Text(_displayEmail,
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 14)),
                       if (_userData?['createdAt'] != null) ...[
                         const SizedBox(height: 4),
                         Text(
-                          _formatMemberSince(_userData!['createdAt']),
+                          _formatMemberSince(_userData!['createdAt'], l),
                           style: TextStyle(
-                            color: Colors.grey.shade500,
-                            fontSize: 12,
-                          ),
+                              color: Colors.grey.shade500, fontSize: 12),
                         ),
                       ],
                     ],
@@ -231,16 +238,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           const SizedBox(height: 16),
 
-          // ── Notifications ────────────────────────────────────────────────
-          const Text(
-            'Notifications',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          // ── Notifications ─────────────────────────────────────────────────
+          Text(l.notifications,
+              style: const TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
 
           SwitchListTile(
-            title: const Text('New tips'),
-            subtitle: const Text('Get notified about new health tips'),
+            title: Text(l.newTips),
+            subtitle: Text(l.newTipsDesc),
             activeTrackColor: const Color(0xFF4CAF82),
             value: _newTips,
             onChanged: (val) {
@@ -249,8 +255,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           SwitchListTile(
-            title: const Text('New features'),
-            subtitle: const Text('Get notified when new features are added'),
+            title: Text(l.newFeatures),
+            subtitle: Text(l.newFeaturesDesc),
             activeTrackColor: const Color(0xFF4CAF82),
             value: _newFeatures,
             onChanged: (val) {
@@ -259,8 +265,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           SwitchListTile(
-            title: const Text('Updates'),
-            subtitle: const Text('Get notified about app updates'),
+            title: Text(l.updatesLabel),
+            subtitle: Text(l.updatesDesc),
             activeTrackColor: const Color(0xFF4CAF82),
             value: _updates,
             onChanged: (val) {
@@ -273,17 +279,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           const SizedBox(height: 16),
 
-          // ── App preferences ──────────────────────────────────────────────
-          const Text(
-            'App Preferences',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          // ── App Preferences ───────────────────────────────────────────────
+          Text(l.appPreferences,
+              style: const TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
 
+          // Theme picker
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Theme'),
-            subtitle: const Text('Choose your preferred theme'),
+            title: Text(l.theme),
+            subtitle: Text(l.themeDesc),
             trailing: ValueListenableBuilder<ThemeMode>(
               valueListenable: appThemeMode,
               builder: (context, mode, _) {
@@ -291,10 +297,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: themeModeLabel(mode),
                   underline: const SizedBox(),
                   borderRadius: BorderRadius.circular(10),
-                  items: const [
-                    DropdownMenuItem(value: 'System', child: Text('System')),
-                    DropdownMenuItem(value: 'Light', child: Text('Light')),
-                    DropdownMenuItem(value: 'Dark', child: Text('Dark')),
+                  items: [
+                    DropdownMenuItem(
+                        value: 'System', child: Text(l.themeSystem)),
+                    DropdownMenuItem(
+                        value: 'Light', child: Text(l.themeLight)),
+                    DropdownMenuItem(
+                        value: 'Dark', child: Text(l.themeDark)),
                   ],
                   onChanged: (val) {
                     if (val == null) return;
@@ -305,33 +314,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
 
+          // Language picker
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Language'),
-            subtitle: const Text('Select your preferred language'),
+            title: Text(l.language),
+            subtitle: Text(l.languageDesc),
             trailing: DropdownButton<String>(
-              value: _language,
+              value: _langCode,
               underline: const SizedBox(),
               borderRadius: BorderRadius.circular(10),
-              items: const [
-                DropdownMenuItem(value: 'English', child: Text('English')),
-                DropdownMenuItem(value: 'French', child: Text('French')),
-                DropdownMenuItem(
-                  value: 'Kinyarwanda',
-                  child: Text('Kinyarwanda'),
-                ),
-              ],
+              items: _languages.entries
+                  .map((e) => DropdownMenuItem(
+                        value: e.key,
+                        child: Text(e.value),
+                      ))
+                  .toList(),
               onChanged: (val) {
-                if (val == null) return;
-                setState(() => _language = val);
-                _saveLanguage(val);
+                if (val != null) _changeLanguage(val);
               },
             ),
           ),
 
           const SizedBox(height: 32),
 
-          // ── Logout ───────────────────────────────────────────────────────
+          // ── Log out ───────────────────────────────────────────────────────
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -340,8 +346,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                    borderRadius: BorderRadius.circular(8)),
               ),
               onPressed: _isLoggingOut ? null : _logout,
               icon: _isLoggingOut
@@ -349,13 +354,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
+                          strokeWidth: 2, color: Colors.white),
                     )
                   : const Icon(Icons.logout),
               label: Text(
-                _isLoggingOut ? 'Logging out…' : 'Log Out',
+                _isLoggingOut ? l.loggingOut : l.logOut,
                 style: const TextStyle(fontSize: 18),
               ),
             ),
@@ -377,13 +380,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Text(
+          l.navSettings,
+          style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 28,
+              fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class _FitnessTip {
   final String picture;
@@ -19,44 +20,38 @@ class _FitnessTip {
   }
 }
 
-const List<_FitnessTip> _allFitnessTips = [
-  _FitnessTip(
-    picture: 'assets/images/fitness/warm_up.webp',
-    title: 'Start with warm-up',
-    description:
-        'Always begin your workout with 5-10 minutes of light cardio and dynamic stretches to prevent injuries.',
-  ),
-  _FitnessTip(
-    picture: 'assets/images/fitness/training.webp',
-    title: 'Strength training basics',
-    description:
-        'Incorporate strength training 2-3 times per week focusing on major muscle groups for balanced development.',
-  ),
-  _FitnessTip(
-    picture: 'assets/images/fitness/cardio.webp',
-    title: 'Cardio for heart health',
-    description:
-        'Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity weekly.',
-  ),
-  _FitnessTip(
-    picture: 'assets/images/fitness/rest-sleep.webp',
-    title: 'Rest and recovery',
-    description:
-        'Take rest days between intense workouts to allow muscles to repair and grow stronger.',
-  ),
-  _FitnessTip(
-    picture: 'assets/images/fitness/01.webp',
-    title: 'Proper form matters',
-    description:
-        'Focus on correct form rather than heavy weights to maximize results and prevent injuries.',
-  ),
-  _FitnessTip(
-    picture: 'assets/images/fitness/cons.webp',
-    title: 'Stay consistent',
-    description:
-        'Create a workout schedule that you can maintain long-term rather than occasional intense sessions.',
-  ),
-];
+List<_FitnessTip> _buildTips(AppLocalizations l) => [
+      _FitnessTip(
+        picture: 'assets/images/fitness/warm_up.webp',
+        title: l.fitnessTip1Title,
+        description: l.fitnessTip1Desc,
+      ),
+      _FitnessTip(
+        picture: 'assets/images/fitness/training.webp',
+        title: l.fitnessTip2Title,
+        description: l.fitnessTip2Desc,
+      ),
+      _FitnessTip(
+        picture: 'assets/images/fitness/cardio.webp',
+        title: l.fitnessTip3Title,
+        description: l.fitnessTip3Desc,
+      ),
+      _FitnessTip(
+        picture: 'assets/images/fitness/rest-sleep.webp',
+        title: l.fitnessTip4Title,
+        description: l.fitnessTip4Desc,
+      ),
+      _FitnessTip(
+        picture: 'assets/images/fitness/01.webp',
+        title: l.fitnessTip5Title,
+        description: l.fitnessTip5Desc,
+      ),
+      _FitnessTip(
+        picture: 'assets/images/fitness/cons.webp',
+        title: l.fitnessTip6Title,
+        description: l.fitnessTip6Desc,
+      ),
+    ];
 
 class FitnessScreen extends StatefulWidget {
   const FitnessScreen({super.key});
@@ -75,21 +70,21 @@ class _FitnessScreenState extends State<FitnessScreen> {
     super.dispose();
   }
 
-  List<_FitnessTip> get _filteredTips =>
-      _allFitnessTips.where((tip) => tip.matches(_searchQuery)).toList();
-
   @override
   Widget build(BuildContext context) {
-    final tips = _filteredTips;
+    final l = AppLocalizations.of(context)!;
+    final allTips = _buildTips(l);
+    final tips =
+        allTips.where((tip) => tip.matches(_searchQuery)).toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Text(
-          'Fitness',
-          style: TextStyle(
+        title: Text(
+          l.topicFitness,
+          style: const TextStyle(
             color: Colors.black87,
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -102,7 +97,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
+            // ── Search bar ────────────────────────────────────────────────
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
@@ -112,7 +107,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
                 controller: _searchController,
                 onChanged: (value) => setState(() => _searchQuery = value),
                 decoration: InputDecoration(
-                  hintText: 'Search fitness tips…',
+                  hintText: l.searchFitnessHint,
                   hintStyle:
                       const TextStyle(color: Colors.grey, fontSize: 16),
                   border: InputBorder.none,
@@ -136,23 +131,25 @@ class _FitnessScreenState extends State<FitnessScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Results count when searching
+            // ── Results count ─────────────────────────────────────────────
             if (_searchQuery.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Text(
                   tips.isEmpty
-                      ? 'No results for "$_searchQuery"'
-                      : '${tips.length} result${tips.length == 1 ? '' : 's'} for "$_searchQuery"',
+                      ? l.noResultsFor(_searchQuery)
+                      : l.searchResultsCount(tips.length, _searchQuery),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: tips.isEmpty
+                        ? Colors.redAccent
+                        : Colors.grey.shade600,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
 
-            // Tips list or empty state
+            // ── Tip list / empty state ────────────────────────────────────
             Expanded(
               child: tips.isEmpty
                   ? Center(
@@ -163,7 +160,7 @@ class _FitnessScreenState extends State<FitnessScreen> {
                               size: 56, color: Colors.grey.shade400),
                           const SizedBox(height: 16),
                           Text(
-                            'No tips found.',
+                            l.noTipsFound,
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
@@ -172,19 +169,21 @@ class _FitnessScreenState extends State<FitnessScreen> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Try a different search term.',
+                            l.tryDifferentKeyword,
                             style: TextStyle(
-                                fontSize: 14, color: Colors.grey.shade500),
+                                fontSize: 14,
+                                color: Colors.grey.shade500),
                           ),
                         ],
                       ),
                     )
                   : ListView.separated(
                       itemCount: tips.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 15),
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: 15),
                       itemBuilder: (context, index) {
                         final tip = tips[index];
-                        return FitnessTipCard(
+                        return _FitnessTipCard(
                           picture: tip.picture,
                           title: tip.title,
                           description: tip.description,
@@ -200,6 +199,8 @@ class _FitnessScreenState extends State<FitnessScreen> {
   }
 }
 
+// ── Tip card ─────────────────────────────────────────────────────────────────
+
 class FitnessTipCard extends StatelessWidget {
   final String title;
   final String description;
@@ -208,6 +209,30 @@ class FitnessTipCard extends StatelessWidget {
 
   const FitnessTipCard({
     super.key,
+    required this.title,
+    required this.description,
+    required this.picture,
+    this.searchQuery = '',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _FitnessTipCard(
+      picture: picture,
+      title: title,
+      description: description,
+      searchQuery: searchQuery,
+    );
+  }
+}
+
+class _FitnessTipCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final String picture;
+  final String searchQuery;
+
+  const _FitnessTipCard({
     required this.title,
     required this.description,
     required this.picture,
@@ -265,7 +290,8 @@ class FitnessTipCard extends StatelessWidget {
                 width: 110,
                 height: 90,
                 color: Colors.grey.shade300,
-                child: const Icon(Icons.image_outlined, color: Colors.black45),
+                child:
+                    const Icon(Icons.image_outlined, color: Colors.black45),
               ),
             ),
           ),
@@ -275,7 +301,8 @@ class FitnessTipCard extends StatelessWidget {
   }
 }
 
-/// Renders [text] with every occurrence of [query] highlighted in yellow.
+// ── Highlight helper ──────────────────────────────────────────────────────────
+
 class _HighlightedText extends StatelessWidget {
   final String text;
   final String query;
@@ -299,11 +326,12 @@ class _HighlightedText extends StatelessWidget {
     while (true) {
       final index = lowerText.indexOf(lowerQuery, start);
       if (index == -1) {
-        spans.add(TextSpan(text: text.substring(start)));
+        spans.add(TextSpan(text: text.substring(start), style: baseStyle));
         break;
       }
       if (index > start) {
-        spans.add(TextSpan(text: text.substring(start, index)));
+        spans.add(TextSpan(
+            text: text.substring(start, index), style: baseStyle));
       }
       spans.add(
         TextSpan(
@@ -318,8 +346,6 @@ class _HighlightedText extends StatelessWidget {
       start = index + query.length;
     }
 
-    return RichText(
-      text: TextSpan(style: baseStyle, children: spans),
-    );
+    return RichText(text: TextSpan(style: baseStyle, children: spans));
   }
 }

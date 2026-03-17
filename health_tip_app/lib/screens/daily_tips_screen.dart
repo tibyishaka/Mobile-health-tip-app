@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/services/notification_service.dart';
 
 class DailyTipsScreen extends StatefulWidget {
@@ -29,15 +30,14 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
   }
 
   Future<void> _toggleReminder(bool value) async {
+    final l = AppLocalizations.of(context)!;
     setState(() => _remindMe = value);
     await NotificationService.setReminder(value);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          value
-              ? '🔔 Daily reminders enabled! You\'ll be notified every day.'
-              : '🔕 Daily reminders disabled.',
+          value ? l.remindersEnabled : l.remindersDisabled,
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -47,16 +47,21 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(10, 12, 10, 20),
         children: [
-          const Text(
-            'Tip of the Day',
-            style: TextStyle(fontSize: 29, fontWeight: FontWeight.w700),
+          // ── Tip of the Day heading ──────────────────────────────────────
+          Text(
+            l.tipOfTheDay,
+            style: const TextStyle(fontSize: 29, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
+
+          // ── Featured tip card ───────────────────────────────────────────
           Container(
             decoration: BoxDecoration(
               color: const Color(0xFFE8E8E8),
@@ -76,20 +81,18 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(6, 6, 6, 0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
                   child: Text(
-                    'Prioritize Sleep for Optimal Health',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    l.dailyTipTitle,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(6, 4, 6, 0),
                   child: Text(
-                    'Aim for 7-9 hours of quality sleep each night to\n'
-                    'support physical and mental well-being.\n'
-                    'Consistent sleep patterns can improve mood,\n'
-                    'focus, and overall health.',
+                    l.dailyTipDesc,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.green.shade700,
@@ -100,31 +103,36 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(6, 4, 6, 8),
                   child: Text(
-                    'Health',
-                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                    l.healthCategory,
+                    style: TextStyle(
+                        fontSize: 14, color: Colors.grey.shade700),
                   ),
                 ),
               ],
             ),
           ),
+
           const SizedBox(height: 26),
+
+          // ── Remind Me row ───────────────────────────────────────────────
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Remind Me',
-                      style: TextStyle(
+                      l.remindMe,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
-                      'Get a daily notification to check your tip of the day.',
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      l.remindMeSubtitle,
+                      style: const TextStyle(
+                          fontSize: 13, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -138,7 +146,8 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                         child: SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child:
+                              CircularProgressIndicator(strokeWidth: 2),
                         ),
                       ),
                     )
@@ -153,14 +162,18 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     ),
             ],
           ),
+
+          // ── Active-reminder banner ──────────────────────────────────────
           if (_remindMe) ...[
             const SizedBox(height: 14),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: const Color(0xFFE8F5E9),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF4CAF82), width: 1),
+                border: Border.all(
+                    color: const Color(0xFF4CAF82), width: 1),
               ),
               child: Row(
                 children: [
@@ -172,7 +185,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'You\'ll receive a daily reminder to check your health tip.',
+                      l.reminderBannerText,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.green.shade800,
