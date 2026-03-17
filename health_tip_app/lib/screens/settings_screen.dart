@@ -87,8 +87,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _newTips     = prefs.getBool(_keyNewTips)     ?? false;
         _newFeatures = prefs.getBool(_keyNewFeatures) ?? false;
         _updates     = prefs.getBool(_keyUpdates)     ?? false;
-        _langCode    = prefs.getString(_keyLanguage)  ?? 'en';
+        _langCode    = _migrateLocaleCode(
+            prefs.getString(_keyLanguage) ?? 'en');
       });
+    }
+  }
+
+  /// Converts legacy full-name values ('English', 'French', 'Spanish')
+  /// that the old code stored in SharedPreferences into proper BCP-47
+  /// locale codes ('en', 'fr', 'es'). Valid codes pass through unchanged.
+  String _migrateLocaleCode(String saved) {
+    switch (saved.toLowerCase()) {
+      case 'english':
+        return 'en';
+      case 'french':
+      case 'français':
+        return 'fr';
+      case 'spanish':
+      case 'español':
+        return 'es';
+      default:
+        // Already a valid code ('en', 'fr', 'es') — use as-is.
+        if (['en', 'fr', 'es'].contains(saved)) return saved;
+        return 'en';
     }
   }
 

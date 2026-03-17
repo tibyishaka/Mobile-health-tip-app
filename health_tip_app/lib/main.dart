@@ -13,15 +13,38 @@ import 'package:health_tip_app/screens/signup_screen.dart';
 import 'package:health_tip_app/screens/sleep_screen.dart';
 import 'package:health_tip_app/services/notification_service.dart';
 
+/// Converts legacy full-name language strings ('English', 'French', 'Spanish')
+/// that were saved before the l10n migration into valid BCP-47 codes.
+/// Already-valid codes ('en', 'fr', 'es') are returned unchanged.
+String _migrateLocaleCode(String raw) {
+  switch (raw.toLowerCase()) {
+    case 'english':
+      return 'en';
+    case 'french':
+    case 'français':
+      return 'fr';
+    case 'spanish':
+    case 'español':
+      return 'es';
+    default:
+      return ['en', 'fr', 'es'].contains(raw) ? raw : 'en';
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.initialize();
 
-  // Restore previously saved locale
+  // Restore saved locale, migrating any old full-name value to a BCP-47 code.
   final prefs = await SharedPreferences.getInstance();
-  final savedLang = prefs.getString('app_language') ?? 'en';
-  appLocale.value = Locale(savedLang);
+  final rawLang = prefs.getString('app_language') ?? 'en';
+  final langCode = _migrateLocaleCode(rawLang);
+  if (langCode != rawLang) {
+    // Write the normalised code back so future reads are already clean.
+    await prefs.setString('app_language', langCode);
+  }
+  appLocale.value = Locale(langCode);
 
   runApp(const HealthTipsApp());
 }
