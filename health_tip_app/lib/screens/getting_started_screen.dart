@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_tip_app/screens/home_screen.dart';
+import 'package:health_tip_app/screens/main_screen.dart';
 
 class GettingStartedScreen extends StatefulWidget {
   const GettingStartedScreen({super.key});
@@ -96,7 +96,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                   ),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
+                      MaterialPageRoute(builder: (_) => const MainScreen()),
                     );
                   },
                   child: const Text(
