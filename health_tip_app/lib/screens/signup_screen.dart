@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -14,6 +15,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -49,6 +51,62 @@ class _SignupScreenState extends State<SignupScreen> {
       return 'Password must be at least 6 characters';
     }
     return null;
+  }
+
+  Future<void> _signUp() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+
+      // Update display name
+      await userCredential.user?.updateDisplayName(_nameController.text.trim());
+
+      // Send verification email
+      await userCredential.user?.sendEmailVerification();
+
+      if (!mounted) return;
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Account created! Please check your email to verify your account.',
+          ),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 5),
+        ),
+      );
+
+      // Navigate back to login
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'An error occurred during sign up'),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -151,16 +209,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        '/getting-started',
-                      );
-                    },
-                    child: const Text(
-                      'Sign up',
-                      style: TextStyle(fontSize: 18),
-                    ),
+                    onPressed: _isLoading ? null : _signUp,
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Sign up', style: TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 16),

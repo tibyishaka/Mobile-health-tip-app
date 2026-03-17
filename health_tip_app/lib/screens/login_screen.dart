@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -40,6 +42,68 @@ class _LoginScreenState extends State<LoginScreen> {
       return 'Password must be at least 6 characters';
     }
     return null;
+  }
+
+  Future<void> _signIn() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+
+      final user = userCredential.user;
+
+      if (user != null && !user.emailVerified) {
+        if (!mounted) return;
+        // User not verified
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Please verify your email before logging in.'),
+            action: SnackBarAction(
+              label: 'Resend Email',
+              textColor: Colors.white,
+              onPressed: () async {
+                await user.sendEmailVerification();
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Verification email sent!')),
+                );
+              },
+            ),
+          ),
+        );
+        // Sign them out since they shouldn't proceed
+        await FirebaseAuth.instance.signOut();
+        return;
+      }
+
+      if (!mounted) return;
+      // If verified, proceed
+      Navigator.pushReplacementNamed(context, '/getting-started');
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? 'An error occurred during login')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -129,16 +193,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        '/getting-started',
-                      );
-                    },
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 18),
-                    ),
+                    onPressed: _isLoading ? null : _signIn,
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Sign In', style: TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 16),
