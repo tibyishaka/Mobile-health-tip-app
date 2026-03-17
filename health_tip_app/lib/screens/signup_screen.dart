@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -72,6 +73,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
       // Send verification email
       await userCredential.user?.sendEmailVerification();
+
+      // Save user details to Firestore database
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .set({
+            'uid': userCredential.user?.uid,
+            'name': _nameController.text.trim(),
+            'email': _emailController.text.trim(),
+            'createdAt': FieldValue.serverTimestamp(),
+          });
 
       if (!mounted) return;
 
