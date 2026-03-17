@@ -1,74 +1,31 @@
 import 'package:flutter/material.dart';
-import 'screens/nutrition_screen.dart';
-import 'screens/sleep_screen.dart';
-import 'screens/mindfulness_screen.dart';
+import 'package:health_tip_app/screens/getting_started_screen.dart';
+import 'package:health_tip_app/screens/mindfulness_screen.dart';
+import 'package:health_tip_app/screens/nutrition_screen.dart';
+import 'package:health_tip_app/screens/sleep_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const HealthTipsApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HealthTipsApp extends StatelessWidget {
+  const HealthTipsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Health Tip App',
+      title: 'Health Tips',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4CAF82)),
         useMaterial3: true,
       ),
-      home: const CategoryNavigator(),
-    );
-  }
-}
-
-class CategoryNavigator extends StatefulWidget {
-  const CategoryNavigator({super.key});
-
-  @override
-  State<CategoryNavigator> createState() => _CategoryNavigatorState();
-}
-
-class _CategoryNavigatorState extends State<CategoryNavigator> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    const NutritionScreen(),
-    const SleepScreen(),
-    const MindfulnessScreen(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: 'Nutrition',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bedtime),
-            label: 'Sleep',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.self_improvement),
-            label: 'Mindfulness',
-          ),
-        ],
-      ),
+      routes: {
+        '/nutrition': (context) => const NutritionScreen(),
+        '/sleep': (context) => const SleepScreen(),
+        '/mindfulness': (context) => const MindfulnessScreen(),
+      },
+      home: const GettingStartedScreen(),
     );
   }
 }

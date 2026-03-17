@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -116,7 +116,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -146,12 +150,18 @@ class _SignupScreenState extends State<SignupScreen> {
                         );
                       }
                     },
-                    child: const Text('Sign up', style: TextStyle(fontSize: 18)),
+                    child: const Text(
+                      'Sign up',
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 Center(
-                  child: Text('Or sign up with', style: TextStyle(color: Colors.grey.shade700)),
+                  child: Text(
+                    'Or sign up with',
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -165,7 +175,10 @@ class _SignupScreenState extends State<SignupScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text('Continue with Google', style: TextStyle(color: Colors.black)),
+                        child: const Text(
+                          'Continue with Google',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -177,7 +190,10 @@ class _SignupScreenState extends State<SignupScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {},
-                        child: const Text('Continue with Apple', style: TextStyle(color: Colors.black)),
+                        child: const Text(
+                          'Continue with Apple',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   ],

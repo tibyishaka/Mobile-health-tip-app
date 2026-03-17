@@ -87,6 +87,15 @@ class DiscoverScreen extends StatelessWidget {
       case 'Stress Management':
         destination = const StressManagementScreen();
         break;
+      case 'Nutrition':
+        Navigator.of(context).pushNamed('/nutrition');
+        return;
+      case 'Sleep':
+        Navigator.of(context).pushNamed('/sleep');
+        return;
+      case 'Mindfulness':
+        Navigator.of(context).pushNamed('/mindfulness');
+        return;
       default:
         destination = null;
     }
