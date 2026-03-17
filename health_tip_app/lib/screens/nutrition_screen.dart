@@ -10,90 +10,115 @@ class NutritionScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Nutrition',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+        title: const Center(
+          child: Text(
+            'Nutrition',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black87),
-            onPressed: () {},
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
+            // Search hint text
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.only(bottom: 25),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F1),
-                  borderRadius: BorderRadius.circular(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 15,
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Search  for topics',
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 15,
-                      ),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search for topics',
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
                     ),
-                  ],
+                    suffixIcon: IconButton(
+                      icon: const Icon(
+                        Icons.search,
+                        color: Colors.black54,
+                        size: 28,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
 
-            // Tip 1 - Increase fiber intake
-            _buildTipRow(
-              title: 'Increase fiber intake',
-              description: 'Fiber helps regulate digestion and keeps you feeling full.',
-              color: const Color(0xFFE8F5E9),
-              icon: Icons.eco,
-              iconColor: const Color(0xFF4CAF50),
-            ),
-
-            // Tip 2 - Stay hydrated
-            _buildTipRow(
-              title: 'Stay hydrated',
-              description: 'Drink plenty of water throughout the day to maintain energy levels.',
-              color: const Color(0xFFFFF8E1),
-              icon: Icons.water_drop,
-              iconColor: const Color(0xFF42A5F5),
-            ),
-
-            // Tip 3 - Choose whole grains
-            _buildTipRow(
-              title: 'Choose whole grains',
-              description: 'Opt for whole grains like brown rice and quinoa for sustained energy.',
-              color: const Color(0xFFFFF3E0),
-              icon: Icons.grass,
-              iconColor: const Color(0xFF8D6E63),
+            // Nutrition tips cards
+            Expanded(
+              child: ListView(
+                children: const [
+                  NutritionTipCard(
+                    picture: 'assets/images/fitness/cons.webp',
+                    title: 'Increase fiber intake',
+                    description:
+                        'Fiber helps regulate digestion and keeps you feeling full longer.',
+                  ),
+                  SizedBox(height: 15),
+                  NutritionTipCard(
+                    picture: 'assets/images/fitness/01.webp',
+                    title: 'Build balanced meals',
+                    description:
+                        'Fill your plate with vegetables, lean protein, healthy fats, and complex carbs.',
+                  ),
+                  SizedBox(height: 15),
+                  NutritionTipCard(
+                    picture: 'assets/images/fitness/cardio.webp',
+                    title: 'Stay hydrated',
+                    description:
+                        'Drink water consistently throughout the day to support energy and focus.',
+                  ),
+                  SizedBox(height: 15),
+                  NutritionTipCard(
+                    picture: 'assets/images/fitness/training.webp',
+                    title: 'Choose whole grains',
+                    description:
+                        'Prefer whole grains like oats, brown rice, and quinoa for lasting energy.',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildTipRow({
-    required String title,
-    required String description,
-    required Color color,
-    required IconData icon,
-    required Color iconColor,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+class NutritionTipCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final String picture;
+
+  const NutritionTipCard({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.picture,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -104,38 +129,35 @@ class NutritionScreen extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
-                    height: 1.5,
+                    color: Colors.green.shade700,
+                    height: 1.4,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 16),
-          Container(
-            width: 110,
-            height: 90,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Icon(icon, size: 40, color: iconColor),
+          const SizedBox(width: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              picture,
+              width: 110,
+              height: 90,
+              fit: BoxFit.cover,
             ),
           ),
         ],
       ),
     );
   }
-
 }

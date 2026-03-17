@@ -10,90 +10,116 @@ class MindfulnessScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Mindfulness',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+        title: const Center(
+          child: Text(
+            'Mindfulness',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black87),
-            onPressed: () {},
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
+            // Search hint text
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.only(bottom: 25),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEDF5FC),
-                  borderRadius: BorderRadius.circular(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 15,
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Search  for topics',
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 15,
-                      ),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search for topics',
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
                     ),
-                  ],
+                    suffixIcon: IconButton(
+                      icon: const Icon(
+                        Icons.search,
+                        color: Colors.black54,
+                        size: 28,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
 
-            // Tip 1 - Practice deep breathing
-            _buildTipRow(
-              title: 'Practice deep breathing',
-              description: 'Take slow, deep breaths to calm your mind and reduce stress throughout the day.',
-              color: const Color(0xFFE1F5FE),
-              icon: Icons.air,
-              iconColor: const Color(0xFF42A5F5),
-            ),
-
-            // Tip 2 - Try meditation
-            _buildTipRow(
-              title: 'Try meditation',
-              description: 'Start with just 5 minutes a day. Meditation can help reduce anxiety and improve focus.',
-              color: const Color(0xFFF3E5F5),
-              icon: Icons.self_improvement,
-              iconColor: const Color(0xFF9C27B0),
-            ),
-
-            // Tip 3 - Be present in the moment
-            _buildTipRow(
-              title: 'Be present in the moment',
-              description: 'Focus on the here and now. Notice your surroundings, thoughts, and feelings without judgment.',
-              color: const Color(0xFFE8F5E9),
-              icon: Icons.spa,
-              iconColor: const Color(0xFF66BB6A),
+            // Mindfulness tips cards
+            Expanded(
+              child: ListView(
+                children: const [
+                  MindfulnessTipCard(
+                    picture: 'assets/images/mental-health/practice.webp',
+                    title: 'Practice deep breathing',
+                    description:
+                        'Take slow, deep breaths for a few minutes to calm the mind and body.',
+                  ),
+                  SizedBox(height: 15),
+                  MindfulnessTipCard(
+                    picture:
+                        'assets/images/mental-health/self-care-routine.webp',
+                    title: 'Try meditation',
+                    description:
+                        'Begin with five minutes daily and gradually increase your practice time.',
+                  ),
+                  SizedBox(height: 15),
+                  MindfulnessTipCard(
+                    picture: 'assets/images/mental-health/journaling.webp',
+                    title: 'Journal your thoughts',
+                    description:
+                        'Write down thoughts and emotions to increase awareness and reduce stress.',
+                  ),
+                  SizedBox(height: 15),
+                  MindfulnessTipCard(
+                    picture: 'assets/images/mental-health/connection.webp',
+                    title: 'Be present in the moment',
+                    description:
+                        'Focus on what you can see, hear, and feel without judging the experience.',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildTipRow({
-    required String title,
-    required String description,
-    required Color color,
-    required IconData icon,
-    required Color iconColor,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+class MindfulnessTipCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final String picture;
+
+  const MindfulnessTipCard({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.picture,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -104,38 +130,35 @@ class MindfulnessScreen extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
-                    height: 1.5,
+                    color: Colors.green.shade700,
+                    height: 1.4,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 16),
-          Container(
-            width: 110,
-            height: 90,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Icon(icon, size: 40, color: iconColor),
+          const SizedBox(width: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              picture,
+              width: 110,
+              height: 90,
+              fit: BoxFit.cover,
             ),
           ),
         ],
       ),
     );
   }
-
 }
