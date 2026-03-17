@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:health_tip_app/app_theme.dart';
 import 'package:health_tip_app/screens/getting_started_screen.dart';
 import 'package:health_tip_app/screens/login_screen.dart';
@@ -7,7 +9,9 @@ import 'package:health_tip_app/screens/nutrition_screen.dart';
 import 'package:health_tip_app/screens/signup_screen.dart';
 import 'package:health_tip_app/screens/sleep_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const HealthTipsApp());
 }
 
@@ -25,7 +29,7 @@ class HealthTipsApp extends StatelessWidget {
           themeMode: mode,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF4CAF82),
+             seedColor: const Color(0xFF4CAF82),
               brightness: Brightness.light,
             ),
             useMaterial3: true,
