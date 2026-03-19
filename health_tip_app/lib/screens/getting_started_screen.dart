@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/screens/main_screen.dart';
 
@@ -11,6 +13,33 @@ class GettingStartedScreen extends StatefulWidget {
 
 class _GettingStartedScreenState extends State<GettingStartedScreen> {
   final Set<String> _selectedKeys = {'topicMentalHealth'};
+  bool _isSaving = false;
+
+  Future<void> _completeOnboarding() async {
+    if (_isSaving) return;
+    setState(() => _isSaving = true);
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'showGettingStarted': false,
+          'onboardingCompletedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const MainScreen()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,17 +125,18 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (_) => const MainScreen()),
-                    );
-                  },
-                  child: Text(
-                    l.getStarted,
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w700),
-                  ),
+                  onPressed: _isSaving ? null : _completeOnboarding,
+                  child: _isSaving
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(
+                          l.getStarted,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w700),
+                        ),
                 ),
               ),
             ],

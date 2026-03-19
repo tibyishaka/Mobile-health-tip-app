@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -49,8 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
           );
 
       final user = userCredential.user;
+      if (user == null) {
+        throw StateError('Sign-in succeeded but no user was returned.');
+      }
 
-      if (user != null && !user.emailVerified) {
+      if (!user.emailVerified) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -73,7 +77,18 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/getting-started');
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final data = userDoc.data();
+      final shouldShowGettingStarted = data?['showGettingStarted'] == true;
+
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(
+        context,
+        shouldShowGettingStarted ? '/getting-started' : '/main',
+      );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
