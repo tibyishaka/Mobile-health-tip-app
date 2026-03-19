@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/screens/main_screen.dart';
@@ -55,6 +57,15 @@ class HealthTipsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const _AutoLogoutOnExit(child: _AppShell());
+  }
+}
+
+class _AppShell extends StatelessWidget {
+  const _AppShell();
+
+  @override
+  Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: appThemeMode,
       builder: (context, mode, _) {
@@ -104,4 +115,60 @@ class HealthTipsApp extends StatelessWidget {
       },
     );
   }
+}
+
+class _AutoLogoutOnExit extends StatefulWidget {
+  const _AutoLogoutOnExit({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_AutoLogoutOnExit> createState() => _AutoLogoutOnExitState();
+}
+
+class _AutoLogoutOnExitState extends State<_AutoLogoutOnExit>
+    with WidgetsBindingObserver {
+  bool _isSigningOut = false;
+
+  bool get _isPhonePlatform {
+    if (kIsWeb) return false;
+    return defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> _signOutIfNeeded() async {
+    if (!_isPhonePlatform || _isSigningOut) return;
+    if (FirebaseAuth.instance.currentUser == null) return;
+
+    _isSigningOut = true;
+    try {
+      await FirebaseAuth.instance.signOut();
+    } finally {
+      _isSigningOut = false;
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _signOutIfNeeded();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
