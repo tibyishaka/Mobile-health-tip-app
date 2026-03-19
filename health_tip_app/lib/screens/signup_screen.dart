@@ -71,6 +71,7 @@ class _SignupScreenState extends State<SignupScreen> {
             'uid': userCredential.user?.uid,
             'name': _nameController.text.trim(),
             'email': _emailController.text.trim(),
+            'showGettingStarted': true,
             'createdAt': FieldValue.serverTimestamp(),
           });
 
