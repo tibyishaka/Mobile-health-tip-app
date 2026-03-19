@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
+import 'package:health_tip_app/screens/main_screen.dart';
 import 'firebase_options.dart';
 import 'package:health_tip_app/app_theme.dart';
 import 'package:health_tip_app/app_locale.dart';
@@ -91,6 +92,7 @@ class HealthTipsApp extends StatelessWidget {
                 '/login': (context) => const LoginScreen(),
                 '/signup': (context) => const SignupScreen(),
                 '/getting-started': (context) => const GettingStartedScreen(),
+                '/main': (context) => const MainScreen(),
                 '/nutrition': (context) => const NutritionScreen(),
                 '/sleep': (context) => const SleepScreen(),
                 '/mindfulness': (context) => const MindfulnessScreen(),
