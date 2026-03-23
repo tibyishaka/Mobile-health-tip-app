@@ -84,18 +84,76 @@ class _AppShell extends StatelessWidget {
               // ── Theme ─────────────────────────────────────────────────────
               themeMode: mode,
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: const Color(0xFF4CAF82),
-                  brightness: Brightness.light,
-                ),
+                colorScheme: lightColorScheme,
                 useMaterial3: true,
+                scaffoldBackgroundColor: lightColorScheme.background,
+                appBarTheme: AppBarTheme(
+                  backgroundColor: lightColorScheme.primary,
+                  foregroundColor: lightColorScheme.onPrimary,
+                  elevation: 0,
+                  iconTheme: IconThemeData(color: lightColorScheme.onPrimary),
+                  titleTextStyle: TextStyle(
+                    color: lightColorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                textTheme: ThemeData.light().textTheme.apply(
+                  bodyColor: lightColorScheme.onBackground,
+                  displayColor: lightColorScheme.onBackground,
+                ),
+                inputDecorationTheme: InputDecorationTheme(
+                  filled: true,
+                  fillColor: lightColorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: lightColorScheme.primary),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: lightColorScheme.primary, width: 2),
+                  ),
+                ),
+                buttonTheme: ButtonThemeData(
+                  buttonColor: lightColorScheme.primary,
+                  textTheme: ButtonTextTheme.primary,
+                ),
               ),
               darkTheme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: const Color(0xFF4CAF82),
-                  brightness: Brightness.dark,
-                ),
+                colorScheme: darkColorScheme,
                 useMaterial3: true,
+                scaffoldBackgroundColor: darkColorScheme.background,
+                appBarTheme: AppBarTheme(
+                  backgroundColor: darkColorScheme.primary,
+                  foregroundColor: darkColorScheme.onPrimary,
+                  elevation: 0,
+                  iconTheme: IconThemeData(color: darkColorScheme.onPrimary),
+                  titleTextStyle: TextStyle(
+                    color: darkColorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                textTheme: ThemeData.dark().textTheme.apply(
+                  bodyColor: darkColorScheme.onBackground,
+                  displayColor: darkColorScheme.onBackground,
+                ),
+                inputDecorationTheme: InputDecorationTheme(
+                  filled: true,
+                  fillColor: darkColorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: darkColorScheme.primary),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: darkColorScheme.primary, width: 2),
+                  ),
+                ),
+                buttonTheme: ButtonThemeData(
+                  buttonColor: darkColorScheme.primary,
+                  textTheme: ButtonTextTheme.primary,
+                ),
               ),
 
               // ── Routes ────────────────────────────────────────────────────
