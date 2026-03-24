@@ -58,7 +58,7 @@ class TipCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: cardText,
+                    color: isDark ? Colors.white : cardText,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -66,7 +66,7 @@ class TipCard extends StatelessWidget {
                   tip.description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: descText,
+                    color: isDark ? Colors.white : descText,
                     height: 1.4,
                   ),
                 ),
