@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
-import 'package:health_tip_app/screens/fitness_screen.dart';
-import 'package:health_tip_app/screens/mental_health_screen.dart';
-import 'package:health_tip_app/screens/stress_management_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -24,43 +21,43 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   // ── Build topic list from localised strings ────────────────────────────────
 
   List<_DiscoverTopic> _buildTopics(AppLocalizations l) => [
-        _DiscoverTopic(
-          routeKey: 'Nutrition',
-          title: l.topicNutrition,
-          imagePath: 'assets/images/fitness/cons.webp',
-          keywords: l.discoverNutritionKeywords,
-        ),
-        _DiscoverTopic(
-          routeKey: 'Sleep',
-          title: l.topicSleep,
-          imagePath: 'assets/images/fitness/rest-sleep.webp',
-          keywords: l.discoverSleepKeywords,
-        ),
-        _DiscoverTopic(
-          routeKey: 'Fitness',
-          title: l.topicFitness,
-          imagePath: 'assets/images/fitness/training.webp',
-          keywords: l.discoverFitnessKeywords,
-        ),
-        _DiscoverTopic(
-          routeKey: 'Mental Health',
-          title: l.topicMentalHealth,
-          imagePath: 'assets/images/mental-health/practice.webp',
-          keywords: l.discoverMentalHealthKeywords,
-        ),
-        _DiscoverTopic(
-          routeKey: 'Stress Management',
-          title: l.topicStressManagement,
-          imagePath: 'assets/images/stress/deep-breathing.webp',
-          keywords: l.discoverStressKeywords,
-        ),
-        _DiscoverTopic(
-          routeKey: 'Mindfulness',
-          title: l.topicMindfulness,
-          imagePath: 'assets/images/mental-health/self-care-routine.webp',
-          keywords: l.discoverMindfulnessKeywords,
-        ),
-      ];
+    _DiscoverTopic(
+      routeKey: 'Nutrition',
+      title: l.topicNutrition,
+      imagePath: 'assets/images/fitness/cons.webp',
+      keywords: l.discoverNutritionKeywords,
+    ),
+    _DiscoverTopic(
+      routeKey: 'Sleep',
+      title: l.topicSleep,
+      imagePath: 'assets/images/fitness/rest-sleep.webp',
+      keywords: l.discoverSleepKeywords,
+    ),
+    _DiscoverTopic(
+      routeKey: 'Fitness',
+      title: l.topicFitness,
+      imagePath: 'assets/images/fitness/training.webp',
+      keywords: l.discoverFitnessKeywords,
+    ),
+    _DiscoverTopic(
+      routeKey: 'Mental Health',
+      title: l.topicMentalHealth,
+      imagePath: 'assets/images/mental-health/practice.webp',
+      keywords: l.discoverMentalHealthKeywords,
+    ),
+    _DiscoverTopic(
+      routeKey: 'Stress Management',
+      title: l.topicStressManagement,
+      imagePath: 'assets/images/stress/deep-breathing.webp',
+      keywords: l.discoverStressKeywords,
+    ),
+    _DiscoverTopic(
+      routeKey: 'Mindfulness',
+      title: l.topicMindfulness,
+      imagePath: 'assets/images/mental-health/self-care-routine.webp',
+      keywords: l.discoverMindfulnessKeywords,
+    ),
+  ];
 
   // ── Fuzzy search ──────────────────────────────────────────────────────────
 
@@ -68,19 +65,22 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final query = _normalize(_query);
     if (query.isEmpty) return all;
 
-    final scored = all
-        .map((t) => (topic: t, score: _matchScore(t, query)))
-        .where((e) => e.score > 0)
-        .toList()
-      ..sort((a, b) => b.score.compareTo(a.score));
+    final scored =
+        all
+            .map((t) => (topic: t, score: _matchScore(t, query)))
+            .where((e) => e.score > 0)
+            .toList()
+          ..sort((a, b) => b.score.compareTo(a.score));
 
     return scored.map((e) => e.topic).toList();
   }
 
   int _matchScore(_DiscoverTopic topic, String query) {
     final searchable = topic.searchable;
-    final words =
-        searchable.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
+    final words = searchable
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty)
+        .toList();
 
     if (searchable.contains(query)) {
       return 120 - searchable.indexOf(query).clamp(0, 40);
@@ -89,8 +89,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     if (query.contains(' ') && words.any(query.contains)) return 80;
     if (_isSubsequence(query, searchable)) return 65;
 
-    final best =
-        words.map((w) => _levenshtein(query, w)).reduce((a, b) => a < b ? a : b);
+    final best = words
+        .map((w) => _levenshtein(query, w))
+        .reduce((a, b) => a < b ? a : b);
     if (best <= 2) return 55 - best * 10;
     return 0;
   }
@@ -129,40 +130,42 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   // ── Navigation ────────────────────────────────────────────────────────────
 
-  void _handleTopicTap(BuildContext context, _DiscoverTopic topic,
-      AppLocalizations l) {
-    Widget? destination;
+  void _handleTopicTap(
+    BuildContext context,
+    _DiscoverTopic topic,
+    AppLocalizations l,
+  ) {
+    String? routeName;
 
     switch (topic.routeKey) {
       case 'Mental Health':
-        destination = const MentalHealthScreen();
+        routeName = '/mental-health';
         break;
       case 'Fitness':
-        destination = const FitnessScreen();
+        routeName = '/fitness';
         break;
       case 'Stress Management':
-        destination = const StressManagementScreen();
+        routeName = '/stress-management';
         break;
       case 'Nutrition':
-        Navigator.of(context).pushNamed('/nutrition');
-        return;
+        routeName = '/nutrition';
+        break;
       case 'Sleep':
-        Navigator.of(context).pushNamed('/sleep');
-        return;
+        routeName = '/sleep';
+        break;
       case 'Mindfulness':
-        Navigator.of(context).pushNamed('/mindfulness');
-        return;
+        routeName = '/mindfulness';
+        break;
     }
 
-    if (destination != null) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (_) => destination!));
+    if (routeName != null) {
+      Navigator.of(context).pushNamed(routeName);
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l.topicComingSoon(topic.title))),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l.topicComingSoon(topic.title))));
   }
 
   // ── Build ────────────────────────────────────────────────────────────────
@@ -184,13 +187,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             onChanged: (value) => setState(() => _query = value),
             decoration: InputDecoration(
               hintText: l.searchTopicsHint,
-              hintStyle:
-                  TextStyle(color: Colors.green.shade300, fontSize: 14),
+              hintStyle: TextStyle(color: Colors.green.shade300, fontSize: 14),
               filled: true,
               fillColor: const Color(0xFFDDE5DE),
               isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
+              ),
               suffixIcon: _query.isEmpty
                   ? const Icon(Icons.search, color: Colors.black54)
                   : IconButton(
@@ -227,8 +231,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             Expanded(
               child: GridView.builder(
                 itemCount: filtered.length,
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
@@ -277,8 +280,7 @@ class _TopicCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (_, _, _) => const Center(
-                      child: Icon(Icons.image_outlined,
-                          color: Colors.black45),
+                      child: Icon(Icons.image_outlined, color: Colors.black45),
                     ),
                   ),
                 ),
@@ -287,8 +289,7 @@ class _TopicCard extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               topic.title,
-              style: const TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -319,6 +320,5 @@ class _DiscoverTopic {
   final String keywords;
 
   /// Combined text the search algorithm runs against.
-  String get searchable =>
-      '${title.toLowerCase()} ${keywords.toLowerCase()}';
+  String get searchable => '${title.toLowerCase()} ${keywords.toLowerCase()}';
 }

@@ -10,11 +10,16 @@ import 'package:health_tip_app/app_theme.dart';
 import 'package:health_tip_app/app_locale.dart';
 import 'package:health_tip_app/screens/getting_started_screen.dart';
 import 'package:health_tip_app/screens/login_screen.dart';
+import 'package:health_tip_app/screens/fitness_screen.dart';
+import 'package:health_tip_app/screens/mental_health_screen.dart';
+import 'package:health_tip_app/screens/stress_management_screen.dart';
 import 'package:health_tip_app/screens/mindfulness_screen.dart';
 import 'package:health_tip_app/screens/nutrition_screen.dart';
 import 'package:health_tip_app/screens/signup_screen.dart';
 import 'package:health_tip_app/screens/sleep_screen.dart';
 import 'package:health_tip_app/services/notification_service.dart';
+import 'package:provider/provider.dart';
+import 'package:health_tip_app/providers/tip_provider.dart';
 
 /// Converts legacy full-name language strings ('English', 'French', 'Spanish')
 /// that were saved before the l10n migration into valid BCP-47 codes.
@@ -49,7 +54,12 @@ void main() async {
   }
   appLocale.value = Locale(langCode);
 
-  runApp(const HealthTipsApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => TipProvider())],
+      child: const HealthTipsApp(),
+    ),
+  );
 }
 
 class HealthTipsApp extends StatelessWidget {
@@ -111,7 +121,10 @@ class _AppShell extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: lightColorScheme.primary, width: 2),
+                    borderSide: BorderSide(
+                      color: lightColorScheme.primary,
+                      width: 2,
+                    ),
                   ),
                 ),
                 buttonTheme: ButtonThemeData(
@@ -147,7 +160,10 @@ class _AppShell extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: darkColorScheme.primary, width: 2),
+                    borderSide: BorderSide(
+                      color: darkColorScheme.primary,
+                      width: 2,
+                    ),
                   ),
                 ),
                 buttonTheme: ButtonThemeData(
@@ -165,6 +181,10 @@ class _AppShell extends StatelessWidget {
                 '/nutrition': (context) => const NutritionScreen(),
                 '/sleep': (context) => const SleepScreen(),
                 '/mindfulness': (context) => const MindfulnessScreen(),
+                '/fitness': (context) => const FitnessScreen(),
+                '/mental-health': (context) => const MentalHealthScreen(),
+                '/stress-management': (context) =>
+                    const StressManagementScreen(),
               },
               home: const LoginScreen(),
             );
