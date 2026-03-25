@@ -236,8 +236,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       // Name
                       TextFormField(
                         controller: _nameController,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: InputDecoration(
                           labelText: l.name,
+                          labelStyle:
+                              TextStyle(color: Colors.grey.shade600),
+                          floatingLabelStyle:
+                              const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.person_outline_rounded,
                             color: green,
@@ -275,8 +280,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: InputDecoration(
                           labelText: l.email,
+                          labelStyle:
+                              TextStyle(color: Colors.grey.shade600),
+                          floatingLabelStyle:
+                              const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.email_outlined,
                             color: green,
@@ -314,8 +324,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: InputDecoration(
                           labelText: l.password,
+                          labelStyle:
+                              TextStyle(color: Colors.grey.shade600),
+                          floatingLabelStyle:
+                              const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.lock_outline_rounded,
                             color: green,
