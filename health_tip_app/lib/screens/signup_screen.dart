@@ -167,9 +167,26 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     const green = Color(0xFF4CAF82);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg =
+        isDark ? const Color(0xFF121212) : const Color(0xFFF5F7FA);
+    final fieldFill = isDark ? const Color(0xFF2A2A2A) : Colors.white;
+    final labelColor =
+        isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final inputTextColor = isDark ? Colors.white : Colors.black87;
+    final borderColor =
+        isDark ? Colors.grey.shade700 : Colors.grey.shade200;
+    final dividerTextColor =
+        isDark ? Colors.grey.shade400 : Colors.grey.shade500;
+    final googleBtnBg = isDark ? const Color(0xFF2A2A2A) : Colors.white;
+    final googleBtnTextColor = isDark ? Colors.white : Colors.black87;
+    final googleBtnBorder =
+        isDark ? Colors.grey.shade600 : Colors.grey.shade300;
+    final subtextColor =
+        isDark ? Colors.grey.shade400 : Colors.grey.shade600;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -236,11 +253,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       // Name
                       TextFormField(
                         controller: _nameController,
-                        style: const TextStyle(color: Colors.black87),
+                        style: TextStyle(color: inputTextColor),
                         decoration: InputDecoration(
                           labelText: l.name,
-                          labelStyle:
-                              TextStyle(color: Colors.grey.shade600),
+                          labelStyle: TextStyle(color: labelColor),
                           floatingLabelStyle:
                               const TextStyle(color: green),
                           prefixIcon: const Icon(
@@ -248,15 +264,14 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: green,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: fieldFill,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: BorderSide.none,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade200),
+                            borderSide: BorderSide(color: borderColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -280,11 +295,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(color: Colors.black87),
+                        style: TextStyle(color: inputTextColor),
                         decoration: InputDecoration(
                           labelText: l.email,
-                          labelStyle:
-                              TextStyle(color: Colors.grey.shade600),
+                          labelStyle: TextStyle(color: labelColor),
                           floatingLabelStyle:
                               const TextStyle(color: green),
                           prefixIcon: const Icon(
@@ -292,15 +306,14 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: green,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: fieldFill,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: BorderSide.none,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade200),
+                            borderSide: BorderSide(color: borderColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -324,11 +337,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        style: const TextStyle(color: Colors.black87),
+                        style: TextStyle(color: inputTextColor),
                         decoration: InputDecoration(
                           labelText: l.password,
-                          labelStyle:
-                              TextStyle(color: Colors.grey.shade600),
+                          labelStyle: TextStyle(color: labelColor),
                           floatingLabelStyle:
                               const TextStyle(color: green),
                           prefixIcon: const Icon(
@@ -336,15 +348,14 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: green,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: fieldFill,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: BorderSide.none,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade200),
+                            borderSide: BorderSide(color: borderColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -364,7 +375,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               _obscurePassword
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
-                              color: Colors.grey.shade500,
+                              color: labelColor,
                             ),
                             onPressed: () => setState(
                                 () => _obscurePassword = !_obscurePassword),
@@ -410,22 +421,20 @@ class _SignupScreenState extends State<SignupScreen> {
                       // OR divider
                       Row(
                         children: [
-                          Expanded(
-                              child: Divider(color: Colors.grey.shade300)),
+                          Expanded(child: Divider(color: borderColor)),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
                               'OR',
                               style: TextStyle(
-                                color: Colors.grey.shade500,
+                                color: dividerTextColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
                               ),
                             ),
                           ),
-                          Expanded(
-                              child: Divider(color: Colors.grey.shade300)),
+                          Expanded(child: Divider(color: borderColor)),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -435,8 +444,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         height: 52,
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            side: BorderSide(color: Colors.grey.shade300),
+                            backgroundColor: googleBtnBg,
+                            side: BorderSide(color: googleBtnBorder),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
@@ -449,10 +458,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             errorBuilder: (context, error, stackTrace) =>
                                 const Icon(Icons.login, size: 22),
                           ),
-                          label: const Text(
+                          label: Text(
                             'Continue with Google',
                             style: TextStyle(
-                              color: Colors.black87,
+                              color: googleBtnTextColor,
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                             ),
@@ -467,7 +476,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           Text(
                             l.alreadyHaveAccount,
-                            style: TextStyle(color: Colors.grey.shade600),
+                            style: TextStyle(color: subtextColor),
                           ),
                           TextButton(
                             onPressed: () =>
