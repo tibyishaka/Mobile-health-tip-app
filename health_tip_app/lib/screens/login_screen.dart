@@ -211,9 +211,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: resetEmailController,
                     keyboardType: TextInputType.emailAddress,
                     enabled: !isSending,
+                    style: const TextStyle(color: Colors.black87),
                     decoration: InputDecoration(
                       labelText: l.emailAddress,
-                      prefixIcon: const Icon(Icons.email_outlined),
+                      labelStyle:
+                          const TextStyle(color: Colors.black54),
+                      floatingLabelStyle: const TextStyle(
+                          color: Color(0xFF4CAF82)),
+                      prefixIcon: const Icon(Icons.email_outlined,
+                          color: Color(0xFF4CAF82)),
                       filled: true,
                       fillColor: Colors.grey.shade100,
                       border: OutlineInputBorder(
