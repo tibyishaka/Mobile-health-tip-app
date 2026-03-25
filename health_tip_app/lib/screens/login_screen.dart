@@ -409,8 +409,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: InputDecoration(
                           labelText: l.email,
+                          labelStyle:
+                              TextStyle(color: Colors.grey.shade600),
+                          floatingLabelStyle:
+                              const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.email_outlined,
                             color: green,
@@ -448,8 +453,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        style: const TextStyle(color: Colors.black87),
                         decoration: InputDecoration(
                           labelText: l.password,
+                          labelStyle:
+                              TextStyle(color: Colors.grey.shade600),
+                          floatingLabelStyle:
+                              const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.lock_outline_rounded,
                             color: green,
