@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CommunityTipsScreen extends StatefulWidget {
   const CommunityTipsScreen({super.key});
@@ -8,32 +10,8 @@ class CommunityTipsScreen extends StatefulWidget {
 }
 
 class _CommunityTipsScreenState extends State<CommunityTipsScreen> {
-  final List<Map<String, dynamic>> _tips = [
-    {
-      'title': 'Drink plenty of water every morning',
-      'description':
-          'Hydration is key to start the day right. A glass of lukewarm water helps digestion.',
-      'author': 'Anonymous',
-      'upvotes': 15,
-      'downvotes': 2,
-    },
-    {
-      'title': 'Take a 10-minute walk after meals',
-      'description':
-          'Light walking helps regulate blood sugar levels and improves digestion.',
-      'author': 'Jane Doe',
-      'upvotes': 34,
-      'downvotes': 0,
-    },
-    {
-      'title': 'Practice 4-7-8 breathing before bed',
-      'description':
-          'Breathe in for 4, hold for 7, out for 8. It calms the nervous system.',
-      'author': 'Anonymous',
-      'upvotes': 12,
-      'downvotes': 1,
-    },
-  ];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void _showAddTipDialog() {
     final titleController = TextEditingController();
@@ -86,21 +64,30 @@ class _CommunityTipsScreenState extends State<CommunityTipsScreen> {
                   child: const Text('Cancel'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (titleController.text.isNotEmpty &&
                         descriptionController.text.isNotEmpty) {
-                      setState(() {
-                        _tips.insert(0, {
-                          'title': titleController.text,
-                          'description': descriptionController.text,
-                          'author': isAnonymous
-                              ? 'Anonymous'
-                              : 'Community Member', // Harcoded name if not anonymous
-                          'upvotes': 0,
-                          'downvotes': 0,
-                        });
+                      final currentUser = _auth.currentUser;
+                      // Fallback name if no user is totally logged in, but better to use displayName or 'Community Member'
+                      final authorName = isAnonymous
+                          ? 'Anonymous'
+                          : (currentUser?.displayName?.isNotEmpty == true
+                                ? currentUser!.displayName!
+                                : 'Community Member');
+
+                      await _firestore.collection('communityTips').add({
+                        'title': titleController.text,
+                        'description': descriptionController.text,
+                        'author': authorName,
+                        'authorId': currentUser?.uid ?? 'unknown',
+                        'upvotes': 0,
+                        'downvotes': 0,
+                        'timestamp': FieldValue.serverTimestamp(),
                       });
-                      Navigator.pop(context);
+
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   child: const Text('Post Tip'),
@@ -113,99 +100,160 @@ class _CommunityTipsScreenState extends State<CommunityTipsScreen> {
     );
   }
 
+  void _deleteTip(String docId) async {
+    await _firestore.collection('communityTips').doc(docId).delete();
+  }
+
+  void _upvoteTip(String docId, int currentUpvotes) async {
+    await _firestore.collection('communityTips').doc(docId).update({
+      'upvotes': currentUpvotes + 1,
+    });
+  }
+
+  void _downvoteTip(String docId, int currentDownvotes) async {
+    await _firestore.collection('communityTips').doc(docId).update({
+      'downvotes': currentDownvotes + 1,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentUserId = _auth.currentUser?.uid;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Community Tips')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(10),
-        itemCount: _tips.length,
-        itemBuilder: (context, index) {
-          final tip = _tips[index];
-          return Card(
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Upvote / Downvote column
-                  Column(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestore
+            .collection('communityTips')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(child: Text('Something went wrong'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final tips = snapshot.data?.docs ?? [];
+
+          if (tips.isEmpty) {
+            return const Center(
+              child: Text('No tips yet. Be the first to share!'),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(10),
+            itemCount: tips.length,
+            itemBuilder: (context, index) {
+              final tipDoc = tips[index];
+              final tip = tipDoc.data() as Map<String, dynamic>;
+              final docId = tipDoc.id;
+
+              final authorId = tip['authorId'] as String?;
+              final isOwner =
+                  currentUserId != null && authorId == currentUserId;
+
+              final upvotes = tip['upvotes'] as int? ?? 0;
+              final downvotes = tip['downvotes'] as int? ?? 0;
+              final score = upvotes - downvotes;
+
+              return Card(
+                elevation: 2,
+                margin: const EdgeInsets.only(bottom: 12),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_upward,
-                          color: Colors.green,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            tip['upvotes'] = (tip['upvotes'] as int) + 1;
-                          });
-                        },
-                      ),
-                      Text(
-                        '${(tip['upvotes'] as int) - (tip['downvotes'] as int)}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_downward,
-                          color: Colors.red,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            tip['downvotes'] = (tip['downvotes'] as int) + 1;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  // Tip content
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tip['title'] as String,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          tip['description'] as String,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.person,
-                              size: 16,
-                              color: Colors.grey,
+                      // Upvote / Downvote column
+                      Column(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_upward,
+                              color: Colors.green,
                             ),
-                            const SizedBox(width: 4),
+                            onPressed: () => _upvoteTip(docId, upvotes),
+                          ),
+                          Text(
+                            '$score',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_downward,
+                              color: Colors.red,
+                            ),
+                            onPressed: () => _downvoteTip(docId, downvotes),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 10),
+                      // Tip content
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    tip['title'] as String? ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                if (isOwner)
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () => _deleteTip(docId),
+                                    tooltip: 'Delete Tip',
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
                             Text(
-                              'By: ${tip['author']}',
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
+                              tip['description'] as String? ?? '',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'By: ${tip['author'] ?? 'Unknown'}',
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           );
         },
       ),
