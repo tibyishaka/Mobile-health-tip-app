@@ -240,9 +240,7 @@ class _AutoLogoutOnExitState extends State<_AutoLogoutOnExit>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.detached) {
       _signOutIfNeeded();
     }
   }
