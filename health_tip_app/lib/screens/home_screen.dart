@@ -100,7 +100,8 @@ class _ArticleCard extends StatelessWidget {
         Text(
           desc,
           style: TextStyle(
-              fontSize: 12, color: Colors.grey[600], height: 1.45),
+              fontSize: 12
+              , color: Colors.grey[600], height: 1.45),
         ),
         const SizedBox(height: 5),
         Text(
