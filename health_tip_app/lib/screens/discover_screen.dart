@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
+import 'package:health_tip_app/screens/community_tips_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -177,33 +178,57 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       child: Column(
         children: [
           // ── Search bar ────────────────────────────────────────────────────
-          TextField(
-            controller: _searchController,
-            onChanged: (value) => setState(() => _query = value),
-            decoration: InputDecoration(
-              hintText: l.searchTopicsHint,
-              hintStyle: TextStyle(color: Colors.green.shade300, fontSize: 14),
-              filled: true,
-              fillColor: const Color(0xFFDDE5DE),
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 12,
-              ),
-              suffixIcon: _query.isEmpty
-                  ? const Icon(Icons.search, color: Colors.black54)
-                  : IconButton(
-                      icon: const Icon(Icons.close, color: Colors.black54),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() => _query = '');
-                      },
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) => setState(() => _query = value),
+                  decoration: InputDecoration(
+                    hintText: l.searchTopicsHint,
+                    hintStyle: TextStyle(
+                      color: Colors.green.shade300,
+                      fontSize: 14,
                     ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none,
+                    filled: true,
+                    fillColor: const Color(0xFFDDE5DE),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    suffixIcon: _query.isEmpty
+                        ? const Icon(Icons.search, color: Colors.black54)
+                        : IconButton(
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.black54,
+                            ),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _query = '');
+                            },
+                          ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.share, color: Colors.green),
+                tooltip: 'Community Tips',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const CommunityTipsScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
 
           const SizedBox(height: 12),
