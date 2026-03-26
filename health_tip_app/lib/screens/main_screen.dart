@@ -33,22 +33,29 @@ class _MainScreenState extends State<MainScreen> {
       l.navSettings,
     ];
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final appBarBg = Theme.of(context).colorScheme.surface;
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final iconColor = isDark ? Colors.white : Colors.black87;
+    final avatarBg = isDark ? Colors.grey.shade800 : Colors.grey.shade200;
+    final avatarIconColor = isDark ? Colors.white : Colors.grey.shade700;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: appBarBg,
         elevation: 0,
         leading: _currentIndex == 2
             ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                icon: Icon(Icons.arrow_back, color: iconColor),
                 onPressed: () => setState(() => _currentIndex = 0),
               )
             : null,
         centerTitle: true,
         title: Text(
           titles[_currentIndex],
-          style: const TextStyle(
-            color: Colors.black87,
+          style: TextStyle(
+            color: titleColor,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -62,10 +69,10 @@ class _MainScreenState extends State<MainScreen> {
                 borderRadius: BorderRadius.circular(20),
                 child: CircleAvatar(
                   radius: 16,
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: avatarBg,
                   child: Icon(
                     Icons.person,
-                    color: Colors.grey.shade700,
+                    color: avatarIconColor,
                     size: 18,
                   ),
                 ),

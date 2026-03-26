@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
 import '../models/health_tip.dart';
+import '../app_theme.dart';
 
 class TipCard extends StatelessWidget {
   final HealthTip tip;
 
   const TipCard({super.key, required this.tip});
 
-  Color _getCardColor(String category) {
-    switch (category) {
-      case 'nutrition':
-        return const Color(0xFFE8F5E9);
-      case 'sleep':
-        return const Color(0xFFFFF3E0);
-      case 'mindfulness':
-        return const Color(0xFFE1F5FE);
-      default:
-        return Colors.grey[100]!;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final cardBg = isDark
+        ? Colors.black
+        : const Color(0xFFE8F5E9); // Light green for light mode
+    final cardText = isDark ? Colors.white : colorScheme.primary;
+    final descText = isDark
+        ? Colors.white
+        : colorScheme.onSurface.withOpacity(0.8);
+    final borderColor = isDark
+        ? Colors.white
+        : const Color(0xFFB2DFDB); // Soft green border in light mode
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: 1.5),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
         ],
       ),
       child: Row(
@@ -44,10 +47,10 @@ class TipCard extends StatelessWidget {
               children: [
                 Text(
                   tip.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: isDark ? Colors.white : cardText,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -55,7 +58,7 @@ class TipCard extends StatelessWidget {
                   tip.description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: isDark ? Colors.white : descText,
                     height: 1.4,
                   ),
                 ),
@@ -67,13 +70,25 @@ class TipCard extends StatelessWidget {
             width: 100,
             height: 80,
             decoration: BoxDecoration(
-              color: _getCardColor(tip.category),
+              color: isDark
+                  ? Colors.black
+                  : const Color(
+                      0xFFC8E6C9,
+                    ), // Lighter green for icon background
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor, width: 1.2),
             ),
-            child: Center(
-              child: Text(
-                tip.iconPath,
-                style: const TextStyle(fontSize: 40),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                tip.imageAsset,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    color: isDark ? Colors.white : colorScheme.primary,
+                  ),
+                ),
               ),
             ),
           ),

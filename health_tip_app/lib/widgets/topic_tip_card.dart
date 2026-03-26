@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../app_theme.dart';
 
 class TopicTipCard extends StatelessWidget {
   final String title;
@@ -14,11 +15,19 @@ class TopicTipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final cardBg = isDark ? Colors.black : const Color(0xFFE8F5E9); // Light green for light mode
+    final cardText = isDark ? Colors.white : colorScheme.primary;
+    final descText = isDark ? Colors.white : AppColors.primaryBlue;
+    final borderColor = isDark ? Colors.white : const Color(0xFFB2DFDB); // Soft green border in light mode
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: 1.5),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,10 +38,10 @@ class TopicTipCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+                    color: isDark ? Colors.white : cardText,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -40,7 +49,7 @@ class TopicTipCard extends StatelessWidget {
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.green.shade700,
+                    color: isDark ? Colors.white : descText,
                     height: 1.4,
                   ),
                 ),
