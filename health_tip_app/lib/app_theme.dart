@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 // Custom color palette for a clean health app look
