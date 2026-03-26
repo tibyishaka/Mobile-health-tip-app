@@ -174,7 +174,7 @@ class _CommunityTipsScreenState extends State<CommunityTipsScreen> {
                           IconButton(
                             icon: const Icon(
                               Icons.arrow_upward,
-                              color: Colors.green,
+                              color: Color(0xFF4CAF82),
                             ),
                             onPressed: () => _upvoteTip(docId, upvotes),
                           ),
