@@ -20,7 +20,7 @@ class TopicTipCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final cardBg = isDark ? Colors.black : const Color(0xFFE8F5E9); // Light green for light mode
     final cardText = isDark ? Colors.white : colorScheme.primary;
-    final descText = isDark ? Colors.white : AppColors.primaryBlue;
+    final descText = isDark ? Colors.white : AppColors.primaryGreen;
     final borderColor = isDark ? Colors.white : const Color(0xFFB2DFDB); // Soft green border in light mode
     return Container(
       padding: const EdgeInsets.all(16),

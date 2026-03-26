@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/widgets/custom_search_bar.dart';
 import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
+import 'package:health_tip_app/widgets/trending_community_tips.dart';
 
 class SleepScreen extends StatefulWidget {
   const SleepScreen({super.key});
@@ -65,6 +66,7 @@ class _SleepScreenState extends State<SleepScreen> {
               onClear: _clearSearch,
             ),
             const SizedBox(height: 20),
+            if (_searchQuery.isEmpty) TrendingCommunityTips(category: 'Sleep'),
 
             if (_searchQuery.isNotEmpty)
               Padding(
@@ -131,3 +133,4 @@ class _SleepScreenState extends State<SleepScreen> {
     );
   }
 }
+

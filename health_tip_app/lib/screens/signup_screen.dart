@@ -144,7 +144,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.accountCreated),
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF4CAF82),
           duration: const Duration(seconds: 5),
         ),
       );

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/services/notification_service.dart';
 
@@ -51,153 +51,202 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(10, 12, 10, 20),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         children: [
-          // ── Tip of the Day heading ──────────────────────────────────────
+          // Tip of the Day heading
           Text(
             l.tipOfTheDay,
-            style: const TextStyle(fontSize: 29, fontWeight: FontWeight.w700),
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
-          // ── Featured tip card ───────────────────────────────────────────
+          // Featured tip card
           Container(
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF000000) : const Color(0xFFE8E8E8),
-              borderRadius: BorderRadius.circular(6),
-              border: isDark ? Border.all(color: Colors.white, width: 1) : null,
+              color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF5F7FA),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200, 
+                width: 1,
+              ),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(6),
+                    top: Radius.circular(15),
                   ),
                   child: Image.asset(
                     'assets/images/fitness/rest-sleep.webp',
-                    height: 130,
+                    height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
-                  child: Text(
-                    l.dailyTipTitle,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 4, 6, 0),
-                  child: Text(
-                    l.dailyTipDesc,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isDark ? Colors.white : Colors.green.shade700,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 4, 6, 8),
-                  child: Text(
-                    l.healthCategory,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isDark ? Colors.white70 : Colors.grey.shade700,
-                    ),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4CAF82).withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          l.healthCategory.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF4CAF82),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l.dailyTipTitle,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white : Colors.black87,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l.dailyTipDesc,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 26),
+          const SizedBox(height: 32),
 
-          // ── Remind Me row ───────────────────────────────────────────────
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          // Remind Me Settings Card
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200, 
+                width: 1,
+              ),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    Text(
-                      l.remindMe,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4CAF82).withOpacity(0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.notifications_active_rounded, color: Color(0xFF4CAF82), size: 24),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l.remindMe,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l.remindMeSubtitle,
+                            style: TextStyle(
+                              fontSize: 13, 
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      l.remindMeSubtitle,
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
+                    const SizedBox(width: 12),
+                    _loadingReminder
+                        ? const SizedBox(
+                            width: 50,
+                            height: 24,
+                            child: Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2.5, color: Color(0xFF4CAF82)),
+                              ),
+                            ),
+                          )
+                        : Switch(
+                            value: _remindMe,
+                            onChanged: _toggleReminder,
+                            activeColor: Colors.white,
+                            activeTrackColor: const Color(0xFF4CAF82),
+                            inactiveThumbColor: isDark ? Colors.grey.shade400 : Colors.white,
+                            inactiveTrackColor: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                          ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              _loadingReminder
-                  ? const SizedBox(
-                      width: 36,
-                      height: 24,
-                      child: Center(
-                        child: SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                if (_remindMe) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Divider(color: isDark ? Colors.grey.shade800 : Colors.grey.shade200, height: 1),
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: Color(0xFF4CAF82),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          l.reminderBannerText,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? Colors.grey.shade300 : Colors.black87,
+                          ),
                         ),
                       ),
-                    )
-                  : Transform.scale(
-                      scale: 0.95,
-                      child: Switch(
-                        value: _remindMe,
-                        onChanged: _toggleReminder,
-                        activeTrackColor: const Color(0xFF4CAF82),
-                        activeThumbColor: Colors.white,
-                      ),
-                    ),
-            ],
-          ),
-
-          // ── Active-reminder banner ──────────────────────────────────────
-          if (_remindMe) ...[
-            const SizedBox(height: 14),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F5E9),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF4CAF82), width: 1),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.notifications_active,
-                    color: Color(0xFF4CAF82),
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      l.reminderBannerText,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.green.shade800,
-                        height: 1.4,
-                      ),
-                    ),
+                    ],
                   ),
                 ],
-              ),
+              ],
             ),
-          ],
+          ),
         ],
       ),
     );

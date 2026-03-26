@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/widgets/custom_search_bar.dart';
 import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
+import 'package:health_tip_app/widgets/trending_community_tips.dart';
 
 class MentalHealthScreen extends StatefulWidget {
   const MentalHealthScreen({super.key});
@@ -62,6 +63,7 @@ class _MentalHealthScreenState extends State<MentalHealthScreen> {
               },
             ),
             const SizedBox(height: 20),
+            if (_searchQuery.isEmpty) TrendingCommunityTips(category: 'Mental Health'),
 
             if (_searchQuery.isNotEmpty)
               Padding(
@@ -128,3 +130,4 @@ class _MentalHealthScreenState extends State<MentalHealthScreen> {
     );
   }
 }
+

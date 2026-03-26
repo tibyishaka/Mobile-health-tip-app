@@ -29,13 +29,14 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
       }
 
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainScreen()),
-      );
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => const MainScreen()));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -46,18 +47,36 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
     final l = AppLocalizations.of(context)!;
 
     final List<_InterestTopic> topics = [
-      _InterestTopic('topicNutrition', l.topicNutrition,
-          'assets/images/fitness/cons.webp'),
-      _InterestTopic('topicSleep', l.topicSleep,
-          'assets/images/fitness/rest-sleep.webp'),
-      _InterestTopic('topicFitness', l.topicFitness,
-          'assets/images/fitness/training.webp'),
-      _InterestTopic('topicMentalHealth', l.topicMentalHealth,
-          'assets/images/mental-health/practice.webp'),
-      _InterestTopic('topicStressManagement', l.topicStressManagement,
-          'assets/images/stress/deep-breathing.webp'),
-      _InterestTopic('topicMindfulness', l.topicMindfulness,
-          'assets/images/mental-health/self-care-routine.webp'),
+      _InterestTopic(
+        'topicNutrition',
+        l.topicNutrition,
+        'assets/images/fitness/cons.webp',
+      ),
+      _InterestTopic(
+        'topicSleep',
+        l.topicSleep,
+        'assets/images/fitness/rest-sleep.webp',
+      ),
+      _InterestTopic(
+        'topicFitness',
+        l.topicFitness,
+        'assets/images/fitness/training.webp',
+      ),
+      _InterestTopic(
+        'topicMentalHealth',
+        l.topicMentalHealth,
+        'assets/images/mental-health/practice.webp',
+      ),
+      _InterestTopic(
+        'topicStressManagement',
+        l.topicStressManagement,
+        'assets/images/stress/deep-breathing.webp',
+      ),
+      _InterestTopic(
+        'topicMindfulness',
+        l.topicMindfulness,
+        'assets/images/mental-health/self-care-routine.webp',
+      ),
     ];
 
     return Scaffold(
@@ -70,7 +89,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
               Text(
                 l.selectInterests,
                 style: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w700),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -86,8 +107,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
               Expanded(
                 child: GridView.builder(
                   itemCount: topics.length,
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 10,
@@ -117,13 +137,13 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2DEA57),
-                    foregroundColor: Colors.black,
-                    elevation: 0,
+                    backgroundColor: const Color(0xFF4CAF82),
+                    foregroundColor: Colors.white,
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: _isSaving ? null : _completeOnboarding,
                   child: _isSaving
@@ -135,7 +155,9 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                       : Text(
                           l.getStarted,
                           style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w700),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                 ),
               ),
@@ -171,25 +193,29 @@ class _InterestCard extends StatelessWidget {
               duration: const Duration(milliseconds: 160),
               width: double.infinity,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: selected
-                      ? const Color(0xFFE58F8F)
+                      ? const Color(0xFF4CAF82)
                       : Colors.transparent,
                   width: 3,
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 child: Container(
-                  color: const Color(0xFFE8DDC8),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF2A2A2A)
+                      : const Color(0xFFF5F7FA),
                   child: Image.asset(
                     topic.imagePath,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Center(
-                        child: Icon(Icons.image_outlined,
-                            color: Colors.black45),
+                        child: Icon(
+                          Icons.image_outlined,
+                          color: Colors.black45,
+                        ),
                       );
                     },
                   ),
@@ -200,8 +226,7 @@ class _InterestCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             topic.title,
-            style: const TextStyle(
-                fontSize: 10, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
           ),
         ],
       ),
