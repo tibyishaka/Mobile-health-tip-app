@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
-import 'package:health_tip_app/screens/fitness_screen.dart';
-import 'package:health_tip_app/screens/mental_health_screen.dart';
-import 'package:health_tip_app/screens/stress_management_screen.dart';
-import 'package:health_tip_app/screens/community_tips_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -140,32 +136,40 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     AppLocalizations l,
   ) {
     Widget? destination;
+  void _handleTopicTap(
+    BuildContext context,
+    _DiscoverTopic topic,
+    AppLocalizations l,
+  ) {
+    String? routeName;
 
     switch (topic.routeKey) {
       case 'Mental Health':
-        destination = const MentalHealthScreen();
+        routeName = '/mental-health';
         break;
       case 'Fitness':
-        destination = const FitnessScreen();
+        routeName = '/fitness';
         break;
       case 'Stress Management':
-        destination = const StressManagementScreen();
+        routeName = '/stress-management';
         break;
       case 'Nutrition':
-        Navigator.of(context).pushNamed('/nutrition');
-        return;
+        routeName = '/nutrition';
+        break;
       case 'Sleep':
-        Navigator.of(context).pushNamed('/sleep');
-        return;
+        routeName = '/sleep';
+        break;
       case 'Mindfulness':
-        Navigator.of(context).pushNamed('/mindfulness');
-        return;
+        routeName = '/mindfulness';
+        break;
     }
 
     if (destination != null) {
       Navigator.of(
         context,
       ).push(MaterialPageRoute(builder: (_) => destination!));
+    if (routeName != null) {
+      Navigator.of(context).pushNamed(routeName);
       return;
     }
 
@@ -188,57 +192,33 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       child: Column(
         children: [
           // ── Search bar ────────────────────────────────────────────────────
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (value) => setState(() => _query = value),
-                  decoration: InputDecoration(
-                    hintText: l.searchTopicsHint,
-                    hintStyle: TextStyle(
-                      color: Colors.green.shade300,
-                      fontSize: 14,
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFFDDE5DE),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
-                    ),
-                    suffixIcon: _query.isEmpty
-                        ? const Icon(Icons.search, color: Colors.black54)
-                        : IconButton(
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.black54,
-                            ),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() => _query = '');
-                            },
-                          ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
+          TextField(
+            controller: _searchController,
+            onChanged: (value) => setState(() => _query = value),
+            decoration: InputDecoration(
+              hintText: l.searchTopicsHint,
+              hintStyle: TextStyle(color: Colors.green.shade300, fontSize: 14),
+              filled: true,
+              fillColor: const Color(0xFFDDE5DE),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 12,
               ),
-              const SizedBox(width: 8),
-              IconButton(
-                icon: const Icon(Icons.share, color: Colors.green),
-                tooltip: 'Community Tips',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const CommunityTipsScreen(),
+              suffixIcon: _query.isEmpty
+                  ? const Icon(Icons.search, color: Colors.black54)
+                  : IconButton(
+                      icon: const Icon(Icons.close, color: Colors.black54),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() => _query = '');
+                      },
                     ),
-                  );
-                },
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
               ),
-            ],
+            ),
           ),
 
           const SizedBox(height: 12),

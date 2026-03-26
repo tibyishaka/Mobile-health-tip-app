@@ -36,9 +36,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          value ? l.remindersEnabled : l.remindersDisabled,
-        ),
+        content: Text(value ? l.remindersEnabled : l.remindersDisabled),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -48,6 +46,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       color: Theme.of(context).colorScheme.surface,
@@ -64,8 +63,9 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
           // ── Featured tip card ───────────────────────────────────────────
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFE8E8E8),
+              color: isDark ? const Color(0xFF000000) : const Color(0xFFE8E8E8),
               borderRadius: BorderRadius.circular(6),
+              border: isDark ? Border.all(color: Colors.white, width: 1) : null,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,8 +85,11 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                   padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
                   child: Text(
                     l.dailyTipTitle,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
                   ),
                 ),
                 Padding(
@@ -95,7 +98,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     l.dailyTipDesc,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.green.shade700,
+                      color: isDark ? Colors.white : Colors.green.shade700,
                       height: 1.35,
                     ),
                   ),
@@ -105,7 +108,9 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                   child: Text(
                     l.healthCategory,
                     style: TextStyle(
-                        fontSize: 14, color: Colors.grey.shade700),
+                      fontSize: 14,
+                      color: isDark ? Colors.white70 : Colors.grey.shade700,
+                    ),
                   ),
                 ),
               ],
@@ -131,8 +136,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     const SizedBox(height: 2),
                     Text(
                       l.remindMeSubtitle,
-                      style: const TextStyle(
-                          fontSize: 13, color: Colors.grey),
+                      style: const TextStyle(fontSize: 13, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -146,8 +150,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                         child: SizedBox(
                           width: 18,
                           height: 18,
-                          child:
-                              CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         ),
                       ),
                     )
@@ -167,13 +170,11 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
           if (_remindMe) ...[
             const SizedBox(height: 14),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: const Color(0xFFE8F5E9),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                    color: const Color(0xFF4CAF82), width: 1),
+                border: Border.all(color: const Color(0xFF4CAF82), width: 1),
               ),
               child: Row(
                 children: [

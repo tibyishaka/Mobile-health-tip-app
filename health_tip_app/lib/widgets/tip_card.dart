@@ -7,29 +7,21 @@ class TipCard extends StatelessWidget {
 
   const TipCard({super.key, required this.tip});
 
-  Color _getCardColor(BuildContext context, String category) {
-    final colorScheme = Theme.of(context).colorScheme;
-    switch (category) {
-      case 'nutrition':
-        return const Color(0xFF4CAF82); // Green for nutrition
-      case 'sleep':
-        return AppColors.accentBlue; // Blue for sleep
-      case 'mindfulness':
-        return AppColors.secondary; // Soft blue for mindfulness
-      default:
-        return colorScheme.surface;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final cardBg = isDark ? Colors.black : const Color(0xFFE8F5E9); // Light green for light mode
+    final cardBg = isDark
+        ? Colors.black
+        : const Color(0xFFE8F5E9); // Light green for light mode
     final cardText = isDark ? Colors.white : colorScheme.primary;
-    final descText = isDark ? Colors.white : colorScheme.onSurface.withOpacity(0.8);
-    final borderColor = isDark ? Colors.white : const Color(0xFFB2DFDB); // Soft green border in light mode
+    final descText = isDark
+        ? Colors.white
+        : colorScheme.onSurface.withOpacity(0.8);
+    final borderColor = isDark
+        ? Colors.white
+        : const Color(0xFFB2DFDB); // Soft green border in light mode
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -78,14 +70,25 @@ class TipCard extends StatelessWidget {
             width: 100,
             height: 80,
             decoration: BoxDecoration(
-              color: isDark ? Colors.black : const Color(0xFFC8E6C9), // Lighter green for icon background
+              color: isDark
+                  ? Colors.black
+                  : const Color(
+                      0xFFC8E6C9,
+                    ), // Lighter green for icon background
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: borderColor, width: 1.2),
             ),
-            child: Center(
-              child: Text(
-                tip.iconPath,
-                style: TextStyle(fontSize: 40, color: isDark ? Colors.white : colorScheme.primary),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                tip.imageAsset,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    color: isDark ? Colors.white : colorScheme.primary,
+                  ),
+                ),
               ),
             ),
           ),

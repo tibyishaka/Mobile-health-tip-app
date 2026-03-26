@@ -12,7 +12,20 @@
           "package_name": "com.example.health_tip_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "253343347002-546heiqjsmqscvoi4e83oba6bs92boah.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.health_tip_app",
+            "certificate_hash": "3d3fff986c2f205aa3c7a43f27eb51aa0794681e"
+          }
+        },
+        {
+          "client_id": "253343347002-e0ov8ppj4vdvchov2gl0js9g0j9h02il.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBjX6HGsNTap0Jqxf1Nvbp-dLMHTpf2_TA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "253343347002-e0ov8ppj4vdvchov2gl0js9g0j9h02il.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "253343347002-avhgudh7eki31c7vbo9qtmrd6kfmnhr7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.healthTipApp"
+              }
+            }
+          ]
         }
       }
     }
