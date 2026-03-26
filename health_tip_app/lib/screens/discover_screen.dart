@@ -19,8 +19,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     super.dispose();
   }
 
-  // â”€â”€ Build topic list from localised strings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
   List<_DiscoverTopic> _buildTopics(AppLocalizations l) => [
     _DiscoverTopic(
       routeKey: 'Nutrition',
@@ -59,8 +57,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       keywords: l.discoverMindfulnessKeywords,
     ),
   ];
-
-  // â”€â”€ Fuzzy search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   List<_DiscoverTopic> _filteredTopics(List<_DiscoverTopic> all) {
     final query = _normalize(_query);
@@ -129,8 +125,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return prev[b.length];
   }
 
-  // â”€â”€ Navigation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
   void _handleTopicTap(
     BuildContext context,
     _DiscoverTopic topic,
@@ -168,8 +162,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     }
   }
 
-  // â”€â”€ Build â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
@@ -181,7 +173,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
       child: Column(
         children: [
-          // â”€â”€ Search bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Row(
             children: [
               Expanded(
@@ -237,7 +228,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
           const SizedBox(height: 12),
 
-          // â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (filtered.isEmpty)
             Expanded(
               child: Center(
@@ -275,8 +265,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 }
-
-// â”€â”€ Topic card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _TopicCard extends StatelessWidget {
   const _TopicCard({required this.topic, required this.onTap});
@@ -322,8 +310,6 @@ class _TopicCard extends StatelessWidget {
   }
 }
 
-// â”€â”€ Data model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 class _DiscoverTopic {
   const _DiscoverTopic({
     required this.routeKey,
@@ -346,4 +332,3 @@ class _DiscoverTopic {
   /// Combined text the search algorithm runs against.
   String get searchable => '${title.toLowerCase()} ${keywords.toLowerCase()}';
 }
-
