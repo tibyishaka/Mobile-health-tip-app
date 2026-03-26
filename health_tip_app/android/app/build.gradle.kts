@@ -24,11 +24,6 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    dependencies {
-        // Required for core library desugaring
-        coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    }
-
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.health_tip_app"
@@ -51,4 +46,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
