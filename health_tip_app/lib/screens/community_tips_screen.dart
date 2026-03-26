@@ -369,12 +369,28 @@ class _CommunityTipsScreenState extends State<CommunityTipsScreen> {
                                 child: Icon(Icons.keyboard_arrow_up_rounded, color: Color(0xFF4CAF82), size: 28),
                               ),
                             ),
+                                                        Text(
+                              upvotes.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: Color(0xFF4CAF82),
+                              ),
+                            ),
                             Text(
-                              '',
+                              score > 0 ? '+' : '',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                                 color: score > 0 ? const Color(0xFF4CAF82) : (score < 0 ? Colors.redAccent : (isDark ? Colors.white : Colors.black87)),
+                              ),
+                            ),
+                            Text(
+                              downvotes.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: Colors.redAccent,
                               ),
                             ),
                             InkWell(
@@ -489,3 +505,4 @@ class _CommunityTipsScreenState extends State<CommunityTipsScreen> {
     );
   }
 }
+
