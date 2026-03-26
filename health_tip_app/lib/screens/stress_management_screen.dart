@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/widgets/custom_search_bar.dart';
 import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
+import 'package:health_tip_app/widgets/trending_community_tips.dart';
 
 class StressManagementScreen extends StatefulWidget {
   const StressManagementScreen({super.key});
@@ -128,3 +129,4 @@ class _StressManagementScreenState extends State<StressManagementScreen> {
     );
   }
 }
+
