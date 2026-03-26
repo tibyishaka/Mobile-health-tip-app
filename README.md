@@ -4,56 +4,51 @@ A Flutter mobile and web app that helps users discover practical wellness advice
 
 ## Overview
 
-Health Tip App is organized around simple, readable health content and category-based discovery. The app currently includes:
+Health Tip App is organized around simple, readable health content and category-based discovery. The app integrates a vibrant community aspect where users can share, upvote, and downvote health tips. It currently includes:
 
-- A full suite of UI screens for topic discovery and engagement.
-- Firebase integration for basic authentication (login and signup).
-- Firebase Cloud Firestore and Storage for backend data and assets.
-- Push and local notifications configured via `flutter_local_notifications`.
-- App localization (`intl`) and theming support.
-- User preference management using `shared_preferences`.
+- A full suite of UI screens unified under a modern, adaptive green theme.
+- A functional Community tips board backed by Firebase Firestore.
+- Dynamic injection of trending community tips into discovery sections.
+- Firebase integration for authentication (login and signup), backend data, and asset storage.
+- Push and local notifications configured via flutter_local_notifications.
+- App localization with multi-language support (English, French, Spanish).
+- User preference state management using Provider and shared_preferences.
+- Comprehensive Unit and Widget testing.
 
 ## Features
 
-- **Health Tip Categories:** Nutrition, Sleep, Fitness, Mental Health, Stress Management, Mindfulness.
-- **Authentication:** Login and Signup powered by Firebase Auth.
-- **Notifications:** Built-in `notification_service.dart` for handling daily tips and local alerts.
-- **Home Feed:** Article-style cards displaying curated content.
-- **Localization:** Support for multiple app locales.
-- **Settings Page:** Controls for notifications and preferences.
-
-## Tech Stack
-
-- **Frontend:** Flutter & Dart, Material 3 widgets
-- **Backend & Auth:** Firebase Core, Firebase Auth, Cloud Firestore, Firebase Storage
-- **Local Storage:** Shared Preferences
-- **Notifications:** Flutter Local Notifications
-- **Localization:** Intl
+- **Unified UI Theme:** A clean, modern green-based design language that adapts beautifully to both light and dark modes.
+- **Health Tip Categories:** Curated content split across Nutrition, Sleep, Fitness, Mental Health, Stress Management, and Mindfulness.
+- **Community Tips & Voting:** Users can submit tips to a community feed and upvote/downvote existing tips.
+- **Trending Integration:** Highly rated community tips are automatically highlighted in their respective discovery categories.
+- **Authentication:** Login and Signup flows securely powered by Firebase Auth.
+- **Favorites System:** Users can save their favorite tips using isolated state providers.
+- **Notifications:** Built-in notification_service.dart for handling daily tips and local alerts.
 
 ## Project Structure
 
-The Flutter source code is located inside the `health_tip_app/` directory:
+The Flutter source code is located inside the health_tip_app/ directory:
 
-```
-health_tip_app/
+\health_tip_app/
   lib/
     main.dart
-    app_locale.dart
     app_theme.dart
-    firebase_options.dart
-    l10n/
+    data/
+      tip_repository.dart
     models/
       health_tip.dart
-    services/
-      notification_service.dart
+    providers/
+      tip_provider.dart
     widgets/
       tip_card.dart
+      topic_tip_card.dart
+      trending_community_tips.dart
+      custom_search_bar.dart
     screens/
       getting_started_screen.dart
-      main_screen.dart
-      home_screen.dart
       discover_screen.dart
       daily_tips_screen.dart
+      community_tips_screen.dart
       settings_screen.dart
       nutrition_screen.dart
       sleep_screen.dart
@@ -62,76 +57,24 @@ health_tip_app/
       mental_health_screen.dart
       stress_management_screen.dart
       login_screen.dart
-      signup_screen.dart
-  assets/
-    images/
-      fitness/
-      mental-health/
-      stress/
-```
-
-## Prerequisites
-
-- Flutter SDK installed (`environment: sdk: ^3.10.4`)
-- A configured Flutter environment (`flutter doctor` shows no blocking issues)
-- Android Studio / Android emulator, Xcode (for iOS), or Chrome (for web)
-
+  test/
+    models/
+    providers/
+    widgets/
+\
 ## Getting Started
 
 1. Clone the repository.
 2. Change into the Flutter project directory:
-
-   ```bash
    cd health_tip_app
-   ```
-
 3. Install dependencies:
-
-   ```bash
    flutter pub get
-   ```
-
 4. Run the app:
-
-   ```bash
    flutter run
-   ```
-
-### Run on Web (Chrome)
-
-```bash
-flutter run -d chrome
-```
-
-## Testing and Analysis
-
-- Run static analysis:
-
-  ```bash
-  flutter analyze
-  ```
-
-- Run tests:
-
-  ```bash
-  flutter test
-  ```
-
-## Assets
-
-Assets are declared in `pubspec.yaml` under:
-
-- `assets/images/fitness/`
-- `assets/images/mental-health/`
-- `assets/images/stress/`
-
-If you add new images, keep them in these directories (or update `pubspec.yaml`) and run `flutter pub get`.
 
 ## Current Status
 
-The project is functional and passes analyzer/tests. It has been upgraded from a UI-first architecture to include Firebase functionality, notification services, and local storage.
+The project is fully functional, passes all analyzers and flutter_test pipelines, and includes advanced state-driven UX like favorite toggling and community leaderboards. 
 
 ## Version
-
-- Current app version: `1.0.0+1`
-
+- Current app version: 1.0.0+1
