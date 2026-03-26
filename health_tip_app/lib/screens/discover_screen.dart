@@ -135,12 +135,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     _DiscoverTopic topic,
     AppLocalizations l,
   ) {
-    Widget? destination;
-  void _handleTopicTap(
-    BuildContext context,
-    _DiscoverTopic topic,
-    AppLocalizations l,
-  ) {
     String? routeName;
 
     switch (topic.routeKey) {
@@ -162,15 +156,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       case 'Mindfulness':
         routeName = '/mindfulness';
         break;
-    }
-
-    if (destination != null) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => destination!));
-    if (routeName != null) {
-      Navigator.of(context).pushNamed(routeName);
-      return;
     }
 
     ScaffoldMessenger.of(
