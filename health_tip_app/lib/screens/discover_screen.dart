@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/screens/community_tips_screen.dart';
 
@@ -19,7 +19,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     super.dispose();
   }
 
-  // ── Build topic list from localised strings ────────────────────────────────
+  // â”€â”€ Build topic list from localised strings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   List<_DiscoverTopic> _buildTopics(AppLocalizations l) => [
     _DiscoverTopic(
@@ -60,7 +60,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     ),
   ];
 
-  // ── Fuzzy search ──────────────────────────────────────────────────────────
+  // â”€â”€ Fuzzy search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   List<_DiscoverTopic> _filteredTopics(List<_DiscoverTopic> all) {
     final query = _normalize(_query);
@@ -129,7 +129,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return prev[b.length];
   }
 
-  // ── Navigation ────────────────────────────────────────────────────────────
+  // â”€â”€ Navigation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   void _handleTopicTap(
     BuildContext context,
@@ -159,12 +159,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         break;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l.topicComingSoon(topic.title))));
+    if (routeName != null) {
+      Navigator.pushNamed(context, routeName);
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.topicComingSoon(topic.title))));
+    }
   }
 
-  // ── Build ────────────────────────────────────────────────────────────────
+  // â”€â”€ Build â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +181,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
       child: Column(
         children: [
-          // ── Search bar ────────────────────────────────────────────────────
+          // â”€â”€ Search bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Row(
             children: [
               Expanded(
@@ -233,7 +237,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
           const SizedBox(height: 12),
 
-          // ── Results ───────────────────────────────────────────────────────
+          // â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           if (filtered.isEmpty)
             Expanded(
               child: Center(
@@ -272,7 +276,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 }
 
-// ── Topic card ───────────────────────────────────────────────────────────────
+// â”€â”€ Topic card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _TopicCard extends StatelessWidget {
   const _TopicCard({required this.topic, required this.onTap});
@@ -318,7 +322,7 @@ class _TopicCard extends StatelessWidget {
   }
 }
 
-// ── Data model ───────────────────────────────────────────────────────────────
+// â”€â”€ Data model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class _DiscoverTopic {
   const _DiscoverTopic({
@@ -328,7 +332,7 @@ class _DiscoverTopic {
     required this.keywords,
   });
 
-  /// Fixed English key used only for routing — never shown to the user.
+  /// Fixed English key used only for routing â€” never shown to the user.
   final String routeKey;
 
   /// Localised display name.
@@ -342,3 +346,4 @@ class _DiscoverTopic {
   /// Combined text the search algorithm runs against.
   String get searchable => '${title.toLowerCase()} ${keywords.toLowerCase()}';
 }
+
