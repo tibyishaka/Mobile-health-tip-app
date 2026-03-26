@@ -5,6 +5,8 @@ import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
 import 'package:health_tip_app/widgets/trending_community_tips.dart';
+import 'package:provider/provider.dart';
+import 'package:health_tip_app/providers/tip_provider.dart';
 
 class SleepScreen extends StatefulWidget {
   const SleepScreen({super.key});
@@ -16,6 +18,17 @@ class SleepScreen extends StatefulWidget {
 class _SleepScreenState extends State<SleepScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TipProvider>(
+        context,
+        listen: false,
+      ).fetchGeminiTipsForCategory(TipCategory.sleep);
+    });
+  }
 
   @override
   void dispose() {
@@ -33,9 +46,15 @@ class _SleepScreenState extends State<SleepScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final allTips = TipRepository.getAllTips(
-      l,
-    ).where((t) => t.category == TipCategory.sleep).toList();
+    final tipProvider = Provider.of<TipProvider>(context);
+    final geminiTips = tipProvider.getGeminiTips(TipCategory.sleep);
+
+    final allTips =
+        TipRepository.getAllTips(
+            l,
+          ).where((t) => t.category == TipCategory.sleep).toList()
+          ..addAll(geminiTips);
+
     final filtered = allTips.where((t) => t.matches(_searchQuery)).toList();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -67,7 +86,20 @@ class _SleepScreenState extends State<SleepScreen> {
             ),
             const SizedBox(height: 20),
             if (_searchQuery.isEmpty) TrendingCommunityTips(category: 'Sleep'),
-
+            if (tipProvider.isLoadingGemini(TipCategory.sleep) &&
+                _searchQuery.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 10),
+                      Text("Generating AI Tips..."),
+                    ],
+                  ),
+                ),
+              ),
             if (_searchQuery.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -133,4 +165,3 @@ class _SleepScreenState extends State<SleepScreen> {
     );
   }
 }
-

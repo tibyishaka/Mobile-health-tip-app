@@ -3,6 +3,7 @@ import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/providers/tip_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class UnifiedTipCard extends StatelessWidget {
   final HealthTip tip;
@@ -94,21 +95,40 @@ class UnifiedTipCard extends StatelessWidget {
             tag: tip.id,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                tip.imageAsset,
-                width: 110,
-                height: 90,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Container(
-                  width: 110,
-                  height: 90,
-                  color: const Color(0xFFE8DDC8),
-                  child: const Icon(
-                    Icons.image_outlined,
-                    color: Colors.black45,
-                  ),
-                ),
-              ),
+              child: tip.imageAsset.startsWith('http')
+                  ? CachedNetworkImage(
+                      imageUrl: tip.imageAsset,
+                      width: 110,
+                      height: 90,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        width: 110,
+                        height: 90,
+                        color: const Color(0xFFE8DDC8),
+                        child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        width: 110,
+                        height: 90,
+                        color: const Color(0xFFE8DDC8),
+                        child: const Icon(Icons.image_outlined, color: Colors.black45),
+                      ),
+                    )
+                  : Image.asset(
+                      tip.imageAsset,
+                      width: 110,
+                      height: 90,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Container(
+                        width: 110,
+                        height: 90,
+                        color: const Color(0xFFE8DDC8),
+                        child: const Icon(
+                          Icons.image_outlined,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
             ),
           ),
         ],

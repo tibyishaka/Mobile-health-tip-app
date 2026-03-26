@@ -5,6 +5,8 @@ import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
 import 'package:health_tip_app/widgets/trending_community_tips.dart';
+import 'package:provider/provider.dart';
+import 'package:health_tip_app/providers/tip_provider.dart';
 
 class MindfulnessScreen extends StatefulWidget {
   const MindfulnessScreen({super.key});
@@ -18,6 +20,17 @@ class _MindfulnessScreenState extends State<MindfulnessScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TipProvider>(
+        context,
+        listen: false,
+      ).fetchGeminiTipsForCategory(TipCategory.mindfulness);
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -26,9 +39,15 @@ class _MindfulnessScreenState extends State<MindfulnessScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final allTips = TipRepository.getAllTips(
-      l,
-    ).where((t) => t.category == TipCategory.mindfulness).toList();
+    final tipProvider = Provider.of<TipProvider>(context);
+    final geminiTips = tipProvider.getGeminiTips(TipCategory.mindfulness);
+
+    final allTips =
+        TipRepository.getAllTips(
+            l,
+          ).where((t) => t.category == TipCategory.mindfulness).toList()
+          ..addAll(geminiTips);
+
     final filtered = allTips.where((t) => t.matches(_searchQuery)).toList();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -63,7 +82,23 @@ class _MindfulnessScreenState extends State<MindfulnessScreen> {
               },
             ),
             const SizedBox(height: 20),
-            if (_searchQuery.isEmpty) TrendingCommunityTips(category: 'Mindfulness'),
+            if (_searchQuery.isEmpty)
+              TrendingCommunityTips(category: 'Mindfulness'),
+
+            if (tipProvider.isLoadingGemini(TipCategory.mindfulness) &&
+                _searchQuery.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 10),
+                      Text("Generating AI Tips..."),
+                    ],
+                  ),
+                ),
+              ),
 
             if (_searchQuery.isNotEmpty)
               Padding(
@@ -130,4 +165,3 @@ class _MindfulnessScreenState extends State<MindfulnessScreen> {
     );
   }
 }
-

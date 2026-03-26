@@ -5,6 +5,8 @@ import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
 import 'package:health_tip_app/widgets/trending_community_tips.dart';
+import 'package:provider/provider.dart';
+import 'package:health_tip_app/providers/tip_provider.dart';
 
 class NutritionScreen extends StatefulWidget {
   const NutritionScreen({super.key});
@@ -18,6 +20,17 @@ class _NutritionScreenState extends State<NutritionScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TipProvider>(
+        context,
+        listen: false,
+      ).fetchGeminiTipsForCategory(TipCategory.nutrition);
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -26,9 +39,15 @@ class _NutritionScreenState extends State<NutritionScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final allTips = TipRepository.getAllTips(
-      l,
-    ).where((t) => t.category == TipCategory.nutrition).toList();
+    final tipProvider = Provider.of<TipProvider>(context);
+    final geminiTips = tipProvider.getGeminiTips(TipCategory.nutrition);
+
+    final allTips =
+        TipRepository.getAllTips(
+            l,
+          ).where((t) => t.category == TipCategory.nutrition).toList()
+          ..addAll(geminiTips);
+
     final filtered = allTips.where((tip) => tip.matches(_searchQuery)).toList();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -63,7 +82,23 @@ class _NutritionScreenState extends State<NutritionScreen> {
               },
             ),
             const SizedBox(height: 20),
-            if (_searchQuery.isEmpty) TrendingCommunityTips(category: 'Nutrition'),
+            if (_searchQuery.isEmpty)
+              TrendingCommunityTips(category: 'Nutrition'),
+
+            if (tipProvider.isLoadingGemini(TipCategory.nutrition) &&
+                _searchQuery.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 10),
+                      Text("Generating AI Tips..."),
+                    ],
+                  ),
+                ),
+              ),
 
             if (_searchQuery.isNotEmpty)
               Padding(
@@ -130,4 +165,3 @@ class _NutritionScreenState extends State<NutritionScreen> {
     );
   }
 }
-

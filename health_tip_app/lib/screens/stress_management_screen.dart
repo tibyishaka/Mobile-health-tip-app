@@ -5,6 +5,8 @@ import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
 import 'package:health_tip_app/widgets/trending_community_tips.dart';
+import 'package:provider/provider.dart';
+import 'package:health_tip_app/providers/tip_provider.dart';
 
 class StressManagementScreen extends StatefulWidget {
   const StressManagementScreen({super.key});
@@ -18,6 +20,17 @@ class _StressManagementScreenState extends State<StressManagementScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TipProvider>(
+        context,
+        listen: false,
+      ).fetchGeminiTipsForCategory(TipCategory.stressManagement);
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -26,9 +39,14 @@ class _StressManagementScreenState extends State<StressManagementScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final allTips = TipRepository.getAllTips(
-      l,
-    ).where((t) => t.category == TipCategory.stressManagement).toList();
+    final tipProvider = Provider.of<TipProvider>(context);
+    final geminiTips = tipProvider.getGeminiTips(TipCategory.stressManagement);
+
+    final allTips =
+        TipRepository.getAllTips(
+            l,
+          ).where((t) => t.category == TipCategory.stressManagement).toList()
+          ..addAll(geminiTips);
     final filtered = allTips.where((t) => t.matches(_searchQuery)).toList();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -63,6 +81,21 @@ class _StressManagementScreenState extends State<StressManagementScreen> {
               },
             ),
             const SizedBox(height: 16),
+
+            if (tipProvider.isLoadingGemini(TipCategory.stressManagement) &&
+                _searchQuery.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 10),
+                      Text("Generating AI Tips..."),
+                    ],
+                  ),
+                ),
+              ),
 
             if (_searchQuery.isNotEmpty)
               Padding(
@@ -129,4 +162,3 @@ class _StressManagementScreenState extends State<StressManagementScreen> {
     );
   }
 }
-

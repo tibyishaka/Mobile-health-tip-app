@@ -5,6 +5,8 @@ import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
 import 'package:health_tip_app/widgets/trending_community_tips.dart';
+import 'package:provider/provider.dart';
+import 'package:health_tip_app/providers/tip_provider.dart';
 
 class FitnessScreen extends StatefulWidget {
   const FitnessScreen({super.key});
@@ -18,6 +20,17 @@ class _FitnessScreenState extends State<FitnessScreen> {
   String _searchQuery = '';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TipProvider>(
+        context,
+        listen: false,
+      ).fetchGeminiTipsForCategory(TipCategory.fitness);
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -26,9 +39,15 @@ class _FitnessScreenState extends State<FitnessScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final allTips = TipRepository.getAllTips(
-      l,
-    ).where((t) => t.category == TipCategory.fitness).toList();
+    final tipProvider = Provider.of<TipProvider>(context);
+    final geminiTips = tipProvider.getGeminiTips(TipCategory.fitness);
+
+    final allTips =
+        TipRepository.getAllTips(
+            l,
+          ).where((t) => t.category == TipCategory.fitness).toList()
+          ..addAll(geminiTips);
+
     final tips = allTips.where((tip) => tip.matches(_searchQuery)).toList();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -63,7 +82,23 @@ class _FitnessScreenState extends State<FitnessScreen> {
               },
             ),
             const SizedBox(height: 20),
-            if (_searchQuery.isEmpty) TrendingCommunityTips(category: 'Fitness'),
+            if (_searchQuery.isEmpty)
+              TrendingCommunityTips(category: 'Fitness'),
+
+            if (tipProvider.isLoadingGemini(TipCategory.fitness) &&
+                _searchQuery.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 10),
+                      Text("Generating AI Tips..."),
+                    ],
+                  ),
+                ),
+              ),
 
             if (_searchQuery.isNotEmpty)
               Padding(
@@ -130,4 +165,3 @@ class _FitnessScreenState extends State<FitnessScreen> {
     );
   }
 }
-
