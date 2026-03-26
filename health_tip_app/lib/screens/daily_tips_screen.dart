@@ -98,7 +98,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     l.dailyTipDesc,
                     style: TextStyle(
                       fontSize: 14,
-                      color: isDark ? Colors.white : Colors.green.shade700,
+                      color: isDark ? Colors.white : Color(0xFF2D8653),
                       height: 1.35,
                     ),
                   ),
@@ -189,7 +189,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                       l.reminderBannerText,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.green.shade800,
+                        color: Color(0xFF2D8653),
                         height: 1.4,
                       ),
                     ),
