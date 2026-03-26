@@ -93,13 +93,14 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? '')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? '')));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -112,8 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (kIsWeb) {
         // Web: Firebase handles the popup directly — returns idToken correctly
-        userCredential = await FirebaseAuth.instance
-            .signInWithPopup(GoogleAuthProvider());
+        userCredential = await FirebaseAuth.instance.signInWithPopup(
+          GoogleAuthProvider(),
+        );
       } else {
         // Mobile: use google_sign_in package
         final googleUser = await GoogleSignIn().signIn();
@@ -126,15 +128,17 @@ class _LoginScreenState extends State<LoginScreen> {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        userCredential =
-            await FirebaseAuth.instance.signInWithCredential(credential);
+        userCredential = await FirebaseAuth.instance.signInWithCredential(
+          credential,
+        );
       }
 
       final user = userCredential.user;
       if (user == null) return;
 
-      final userRef =
-          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid);
       final userDoc = await userRef.get();
 
       bool shouldShowGettingStarted = false;
@@ -159,12 +163,14 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? '')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? '')));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -194,7 +200,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     l.resetPassword,
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -214,12 +222,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: const TextStyle(color: Colors.black87),
                     decoration: InputDecoration(
                       labelText: l.emailAddress,
-                      labelStyle:
-                          const TextStyle(color: Colors.black54),
+                      labelStyle: const TextStyle(color: Colors.black54),
                       floatingLabelStyle: const TextStyle(
-                          color: Color(0xFF4CAF82)),
-                      prefixIcon: const Icon(Icons.email_outlined,
-                          color: Color(0xFF4CAF82)),
+                        color: Color(0xFF4CAF82),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.email_outlined,
+                        color: Color(0xFF4CAF82),
+                      ),
                       filled: true,
                       fillColor: Colors.grey.shade100,
                       border: OutlineInputBorder(
@@ -228,20 +238,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                            color: Color(0xFF4CAF82), width: 2),
+                          color: Color(0xFF4CAF82),
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              actionsPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              actionsPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               actions: [
                 TextButton(
-                  onPressed:
-                      isSending ? null : () => Navigator.pop(dialogContext),
-                  child: Text(l.cancel,
-                      style: const TextStyle(color: Colors.black54)),
+                  onPressed: isSending
+                      ? null
+                      : () => Navigator.pop(dialogContext),
+                  child: Text(
+                    l.cancel,
+                    style: const TextStyle(color: Colors.black54),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -251,7 +268,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                   ),
                   onPressed: isSending
                       ? null
@@ -268,8 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           final emailPattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$';
                           if (!RegExp(emailPattern).hasMatch(email)) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(l.enterValidEmailFirst)),
+                              SnackBar(content: Text(l.enterValidEmailFirst)),
                             );
                             return;
                           }
@@ -277,8 +295,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           setDialogState(() => isSending = true);
 
                           try {
-                            await FirebaseAuth.instance
-                                .sendPasswordResetEmail(email: email);
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                              email: email,
+                            );
 
                             if (!context.mounted) return;
                             Navigator.pop(dialogContext);
@@ -309,9 +328,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 message = e.message ?? l.failedToSendReset;
                             }
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(message)),
-                            );
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(message)));
                           } catch (e) {
                             if (!context.mounted) return;
                             setDialogState(() => isSending = false);
@@ -325,11 +344,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white),
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
-                      : Text(l.sendResetLink,
-                          style:
-                              const TextStyle(fontWeight: FontWeight.w600)),
+                      : Text(
+                          l.sendResetLink,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
                 ),
               ],
             );
@@ -346,22 +368,22 @@ class _LoginScreenState extends State<LoginScreen> {
     final l = AppLocalizations.of(context)!;
     const green = Color(0xFF4CAF82);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final scaffoldBg =
-        isDark ? const Color(0xFF121212) : const Color(0xFFF5F7FA);
+    final scaffoldBg = isDark
+        ? const Color(0xFF121212)
+        : const Color(0xFFF5F7FA);
     final fieldFill = isDark ? const Color(0xFF2A2A2A) : Colors.white;
-    final labelColor =
-        isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final labelColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
     final inputTextColor = isDark ? Colors.white : Colors.black87;
-    final borderColor =
-        isDark ? Colors.grey.shade700 : Colors.grey.shade200;
-    final dividerTextColor =
-        isDark ? Colors.grey.shade400 : Colors.grey.shade500;
+    final borderColor = isDark ? Colors.grey.shade700 : Colors.grey.shade200;
+    final dividerTextColor = isDark
+        ? Colors.grey.shade400
+        : Colors.grey.shade500;
     final googleBtnBg = isDark ? const Color(0xFF2A2A2A) : Colors.white;
     final googleBtnTextColor = isDark ? Colors.white : Colors.black87;
-    final googleBtnBorder =
-        isDark ? Colors.grey.shade600 : Colors.grey.shade300;
-    final subtextColor =
-        isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final googleBtnBorder = isDark
+        ? Colors.grey.shade600
+        : Colors.grey.shade300;
+    final subtextColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -436,8 +458,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                           labelText: l.email,
                           labelStyle: TextStyle(color: labelColor),
-                          floatingLabelStyle:
-                              const TextStyle(color: green),
+                          floatingLabelStyle: const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.email_outlined,
                             color: green,
@@ -454,8 +475,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide:
-                                const BorderSide(color: green, width: 1.5),
+                            borderSide: const BorderSide(
+                              color: green,
+                              width: 1.5,
+                            ),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -478,8 +501,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                           labelText: l.password,
                           labelStyle: TextStyle(color: labelColor),
-                          floatingLabelStyle:
-                              const TextStyle(color: green),
+                          floatingLabelStyle: const TextStyle(color: green),
                           prefixIcon: const Icon(
                             Icons.lock_outline_rounded,
                             color: green,
@@ -496,8 +518,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide:
-                                const BorderSide(color: green, width: 1.5),
+                            borderSide: const BorderSide(
+                              color: green,
+                              width: 1.5,
+                            ),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -515,7 +539,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: labelColor,
                             ),
                             onPressed: () => setState(
-                                () => _obscurePassword = !_obscurePassword),
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                           ),
                         ),
                         validator: (v) => _validatePassword(v, l),
@@ -572,11 +597,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       // OR divider
                       Row(
                         children: [
-                          Expanded(
-                              child: Divider(color: borderColor)),
+                          Expanded(child: Divider(color: borderColor)),
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
                               'OR',
                               style: TextStyle(
@@ -586,8 +609,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          Expanded(
-                              child: Divider(color: borderColor)),
+                          Expanded(child: Divider(color: borderColor)),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -603,14 +625,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          onPressed:
-                              _isLoading ? null : _signInWithGoogle,
-                          icon: Image.network(
-                            'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                            height: 22,
-                            width: 22,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.login, size: 22),
+                          onPressed: _isLoading ? null : _signInWithGoogle,
+                          icon: const Icon(
+                            Icons.account_circle,
+                            size: 24,
+                            color: Colors.blue,
                           ),
                           label: Text(
                             'Sign in with Google',

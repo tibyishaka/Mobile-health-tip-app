@@ -451,12 +451,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           onPressed: _isLoading ? null : _signInWithGoogle,
-                          icon: Image.network(
-                            'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                            height: 22,
-                            width: 22,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.login, size: 22),
+                          icon: const Icon(
+                            Icons.account_circle, 
+                            size: 24, 
+                            color: Colors.blue
                           ),
                           label: Text(
                             'Continue with Google',

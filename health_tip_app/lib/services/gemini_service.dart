@@ -12,8 +12,9 @@ class GeminiService {
       throw Exception('GEMINI_API_KEY is not set in the .env file');
     }
 
-    // Using the recommended gemini-1.5-pro for better reasoning and text generation
-    _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey);
+    // Using gemini-pro (1.0) because the 1.5 models are returning 404 Not Found
+    // for this API key's region or tier.
+    _model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
   }
 
   // Large pool of dynamic online and offline image assets to cycle through
@@ -111,7 +112,14 @@ Example:
             .replaceAll(RegExp(r'```json\s*'), '')
             .replaceAll(RegExp(r'\s*```'), '');
 
-        final List<dynamic> jsonList = jsonDecode(cleanText);
+        List<dynamic> jsonList;
+        try {
+          jsonList = jsonDecode(cleanText);
+        } catch (e) {
+          print('JSON Decode Error: $e');
+          print('Gemini Output was: $textResults');
+          return [];
+        }
 
         final pool = _imagePools[category] ?? _imagePools[TipCategory.fitness]!;
         int i = 0;
@@ -130,8 +138,9 @@ Example:
         }).toList();
       }
       return [];
-    } catch (e) {
-      print('Error generating tips from Gemini: \$e');
+    } catch (e, stacktrace) {
+      print('Error generating tips from Gemini: $e');
+      print('Stacktrace: $stacktrace');
       return [];
     }
   }
