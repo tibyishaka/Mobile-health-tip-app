@@ -18,19 +18,23 @@ class TrendingCommunityTips extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const SizedBox.shrink();
 
-        final rawTips = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-        
+        final rawTips = snapshot.data!.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
+
         // Filter: upvotes > 50, downvotes < 25
         final trendingTips = rawTips.where((tip) {
           final upvotes = tip['upvotes'] as int? ?? 0;
           final downvotes = tip['downvotes'] as int? ?? 0;
-          return upvotes > 50 && downvotes < 25;
+          return upvotes >= 5 && (upvotes - downvotes) >= 3;
         }).toList();
 
         // Sort by highest score
         trendingTips.sort((a, b) {
-          final scoreA = (a['upvotes'] as int? ?? 0) - (a['downvotes'] as int? ?? 0);
-          final scoreB = (b['upvotes'] as int? ?? 0) - (b['downvotes'] as int? ?? 0);
+          final scoreA =
+              (a['upvotes'] as int? ?? 0) - (a['downvotes'] as int? ?? 0);
+          final scoreB =
+              (b['upvotes'] as int? ?? 0) - (b['downvotes'] as int? ?? 0);
           return scoreB.compareTo(scoreA);
         });
 
@@ -64,7 +68,9 @@ class TrendingCommunityTips extends StatelessWidget {
                 separatorBuilder: (context, index) => const SizedBox(width: 16),
                 itemBuilder: (context, index) {
                   final tip = trendingTips[index];
-                  final score = (tip['upvotes'] as int? ?? 0) - (tip['downvotes'] as int? ?? 0);
+                  final score =
+                      (tip['upvotes'] as int? ?? 0) -
+                      (tip['downvotes'] as int? ?? 0);
 
                   return Container(
                     width: 260,
@@ -73,7 +79,9 @@ class TrendingCommunityTips extends StatelessWidget {
                       color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                        color: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
                       ),
                       boxShadow: [
                         if (!isDark)
@@ -91,7 +99,10 @@ class TrendingCommunityTips extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.orangeAccent.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(12),
@@ -107,7 +118,11 @@ class TrendingCommunityTips extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                const Icon(Icons.keyboard_arrow_up_rounded, color: Color(0xFF4CAF82), size: 16),
+                                const Icon(
+                                  Icons.keyboard_arrow_up_rounded,
+                                  color: Color(0xFF4CAF82),
+                                  size: 16,
+                                ),
                                 Text(
                                   '$score',
                                   style: const TextStyle(
@@ -137,7 +152,9 @@ class TrendingCommunityTips extends StatelessWidget {
                             tip['description'] as String? ?? '',
                             style: TextStyle(
                               fontSize: 13,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600,
                             ),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
@@ -156,4 +173,3 @@ class TrendingCommunityTips extends StatelessWidget {
     );
   }
 }
-

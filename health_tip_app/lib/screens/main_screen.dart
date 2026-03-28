@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/screens/daily_tips_screen.dart';
 import 'package:health_tip_app/screens/discover_screen.dart';
+import 'package:health_tip_app/screens/favorites_screen.dart';
 import 'package:health_tip_app/screens/home_screen.dart';
 import 'package:health_tip_app/screens/settings_screen.dart';
 
@@ -19,6 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     DiscoverScreen(),
     DailyTipsScreen(),
+    FavoritesScreen(),
     SettingsScreen(embedded: true),
   ];
 
@@ -30,6 +32,7 @@ class _MainScreenState extends State<MainScreen> {
       l.appTitle,
       l.navDiscover,
       l.navDailyTips,
+      'Favourites',
       l.navSettings,
     ];
 
@@ -65,16 +68,12 @@ class _MainScreenState extends State<MainScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 12),
               child: InkWell(
-                onTap: () => setState(() => _currentIndex = 3),
+                onTap: () => setState(() => _currentIndex = 4),
                 borderRadius: BorderRadius.circular(20),
                 child: CircleAvatar(
                   radius: 16,
                   backgroundColor: avatarBg,
-                  child: Icon(
-                    Icons.person,
-                    color: avatarIconColor,
-                    size: 18,
-                  ),
+                  child: Icon(Icons.person, color: avatarIconColor, size: 18),
                 ),
               ),
             ),
@@ -106,6 +105,11 @@ class _MainScreenState extends State<MainScreen> {
             icon: const Icon(Icons.lightbulb_outline),
             activeIcon: const Icon(Icons.lightbulb),
             label: l.navDailyTips,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.favorite_border_rounded),
+            activeIcon: const Icon(Icons.favorite_rounded),
+            label: 'Favourites',
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings_outlined),

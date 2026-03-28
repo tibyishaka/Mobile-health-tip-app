@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:health_tip_app/models/health_tip.dart';
@@ -7,6 +8,7 @@ class TipProvider extends ChangeNotifier {
   final Set<String> _favoriteIds = {};
   final Map<TipCategory, List<HealthTip>> _geminiTips = {};
   final Map<TipCategory, bool> _isLoadingGemini = {};
+  final Map<TipCategory, String?> _geminiErrors = {};
   final GeminiService _geminiService = GeminiService();
 
   Set<String> get favoriteIds => _favoriteIds;
@@ -29,9 +31,11 @@ class TipProvider extends ChangeNotifier {
       // Fetch 15 AI tips to ensure there are plenty per category
       final tips = await _geminiService.generateHealthTips(category, count: 15);
       _geminiTips[category] = tips;
+      _geminiErrors.remove(category);
     } catch (e) {
-      print('Error fetching gemini tips for \$category: \$e');
+      debugPrint('Error fetching gemini tips for $category: $e');
       _geminiTips[category] = [];
+      _geminiErrors[category] = e.toString();
     } finally {
       _isLoadingGemini[category] = false;
       notifyListeners();
@@ -42,9 +46,14 @@ class TipProvider extends ChangeNotifier {
     return _geminiTips[category] ?? [];
   }
 
+  /// Returns the list of categories for which Gemini tips have been cached.
+  List<TipCategory> getAllCachedCategories() => _geminiTips.keys.toList();
+
   bool isLoadingGemini(TipCategory category) {
     return _isLoadingGemini[category] ?? false;
   }
+
+  String? getGeminiError(TipCategory category) => _geminiErrors[category];
 
   Future<void> _loadFavorites() async {
     final prefs = await SharedPreferences.getInstance();

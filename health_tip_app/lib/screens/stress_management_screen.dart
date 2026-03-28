@@ -4,7 +4,7 @@ import 'package:health_tip_app/widgets/custom_search_bar.dart';
 import 'package:health_tip_app/widgets/unified_tip_card.dart';
 import 'package:health_tip_app/models/health_tip.dart';
 import 'package:health_tip_app/data/tip_repository.dart';
-import 'package:health_tip_app/widgets/trending_community_tips.dart';
+
 import 'package:provider/provider.dart';
 import 'package:health_tip_app/providers/tip_provider.dart';
 
