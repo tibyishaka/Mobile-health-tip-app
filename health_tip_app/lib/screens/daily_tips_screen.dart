@@ -1,6 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
 import 'package:health_tip_app/services/notification_service.dart';
+import 'package:health_tip_app/data/tip_repository.dart';
+import 'package:health_tip_app/models/health_tip.dart';
 
 class DailyTipsScreen extends StatefulWidget {
   const DailyTipsScreen({super.key});
@@ -43,30 +45,56 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
     );
   }
 
+  /// Picks a different tip each calendar day, cycling through all static tips.
+  HealthTip _getTodaysTip(AppLocalizations l) {
+    final allTips = TipRepository.getAllTips(l);
+    final dayOfYear = DateTime.now()
+        .difference(DateTime(DateTime.now().year, 1, 1))
+        .inDays;
+    return allTips[dayOfYear % allTips.length];
+  }
+
+  String _categoryLabel(TipCategory category, AppLocalizations l) {
+    switch (category) {
+      case TipCategory.fitness:
+        return l.topicFitness;
+      case TipCategory.nutrition:
+        return l.topicNutrition;
+      case TipCategory.mentalHealth:
+        return l.topicMentalHealth;
+      case TipCategory.sleep:
+        return l.topicSleep;
+      case TipCategory.stressManagement:
+        return l.topicStressManagement;
+      case TipCategory.mindfulness:
+        return l.topicMindfulness;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final todaysTip = _getTodaysTip(l);
 
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         children: [
-          // Tip of the Day heading
           Text(
             l.tipOfTheDay,
             style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 16),
 
-          // Featured tip card
+          // Daily tip card — rotates every day
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF5F7FA),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200, 
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                 width: 1,
               ),
               boxShadow: [
@@ -86,10 +114,21 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     top: Radius.circular(15),
                   ),
                   child: Image.asset(
-                    'assets/images/fitness/rest-sleep.webp',
+                    todaysTip.imageAsset,
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 200,
+                      color: const Color(0xFF4CAF82).withOpacity(0.15),
+                      child: const Center(
+                        child: Icon(
+                          Icons.spa,
+                          size: 64,
+                          color: Color(0xFF4CAF82),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Padding(
@@ -98,13 +137,16 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF4CAF82).withOpacity(0.15),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          l.healthCategory.toUpperCase(),
+                          _categoryLabel(todaysTip.category, l).toUpperCase(),
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -114,7 +156,7 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        l.dailyTipTitle,
+                        todaysTip.title,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -124,10 +166,12 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        l.dailyTipDesc,
+                        todaysTip.description,
                         style: TextStyle(
                           fontSize: 15,
-                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade700,
                           height: 1.5,
                         ),
                       ),
@@ -140,14 +184,14 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
 
           const SizedBox(height: 32),
 
-          // Remind Me Settings Card
+          // Remind Me card
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200, 
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                 width: 1,
               ),
               boxShadow: [
@@ -169,7 +213,11 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                         color: const Color(0xFF4CAF82).withOpacity(0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.notifications_active_rounded, color: Color(0xFF4CAF82), size: 24),
+                      child: const Icon(
+                        Icons.notifications_active_rounded,
+                        color: Color(0xFF4CAF82),
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -188,8 +236,10 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                           Text(
                             l.remindMeSubtitle,
                             style: TextStyle(
-                              fontSize: 13, 
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600
+                              fontSize: 13,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600,
                             ),
                           ),
                         ],
@@ -204,7 +254,10 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                               child: SizedBox(
                                 width: 20,
                                 height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2.5, color: Color(0xFF4CAF82)),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Color(0xFF4CAF82),
+                                ),
                               ),
                             ),
                           )
@@ -213,15 +266,24 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                             onChanged: _toggleReminder,
                             activeColor: Colors.white,
                             activeTrackColor: const Color(0xFF4CAF82),
-                            inactiveThumbColor: isDark ? Colors.grey.shade400 : Colors.white,
-                            inactiveTrackColor: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                            inactiveThumbColor: isDark
+                                ? Colors.grey.shade400
+                                : Colors.white,
+                            inactiveTrackColor: isDark
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade300,
                           ),
                   ],
                 ),
                 if (_remindMe) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Divider(color: isDark ? Colors.grey.shade800 : Colors.grey.shade200, height: 1),
+                    child: Divider(
+                      color: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade200,
+                      height: 1,
+                    ),
                   ),
                   Row(
                     children: [
@@ -237,7 +299,9 @@ class _DailyTipsScreenState extends State<DailyTipsScreen> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: isDark ? Colors.grey.shade300 : Colors.black87,
+                            color: isDark
+                                ? Colors.grey.shade300
+                                : Colors.black87,
                           ),
                         ),
                       ),

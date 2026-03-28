@@ -1,0 +1,107 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ─────────────────────────────────────────────────────
+
+    /// True when the request comes from a signed-in Firebase Auth user.
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    /// True when the authenticated user owns the document at the given userId.
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    /// True when the write only touches the voting fields — used to allow any
+    /// authenticated user to cast a vote without being able to alter other fields.
+    function isVoteUpdate() {
+      return isAuthenticated()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys()
+             .hasOnly(['upvotes', 'downvotes', 'upvoterIds', 'downvoterIds']);
+    }
+
+    /// True when the authenticated user is the original author of the document.
+    function isAuthor() {
+      return isAuthenticated()
+        && resource.data.authorId == request.auth.uid;
+    }
+
+    // ── /users/{userId} ──────────────────────────────────────────────────────
+    //
+    // Each document holds a user's profile (name, email, interests, onboarding
+    // flags, member-since timestamp).
+    //
+    // • Any authenticated user may read a profile — needed to resolve author
+    //   names on community tips.
+    // • Only the owner of a profile may create or update it.
+    // • Deletion of the profile document happens exclusively through the
+    //   account-deletion flow inside the app, which runs under the owner's
+    //   credentials.
+
+    match /users/{userId} {
+      allow read:   if isAuthenticated();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    // ── /communityTips/{tipId} ───────────────────────────────────────────────
+    //
+    // Community-submitted health tips with upvote / downvote counters.
+    //
+    // READ   — any authenticated user may browse all tips.
+    // CREATE — any authenticated user may post a tip, but the document's
+    //          `authorId` field must match their own UID so authorship cannot
+    //          be spoofed.
+    // UPDATE — two update paths are permitted:
+    //          (a) The original author may edit any field of their own tip.
+    //          (b) Any authenticated user may cast a vote, but the write must
+    //              only touch the four vote-related fields (isVoteUpdate).
+    //          This prevents any user from silently editing another person's
+    //          tip title / description while appearing to cast a vote.
+    // DELETE — only the original author may remove their tip.
+
+    match /communityTips/{tipId} {
+      allow read:   if isAuthenticated();
+
+      allow create: if isAuthenticated()
+                    && request.resource.data.authorId == request.auth.uid
+                    // Enforce required fields so malformed documents cannot
+                    // be inserted by a rogue client.
+                    && request.resource.data.keys().hasAll([
+                         'title', 'description', 'category',
+                         'author', 'authorId',
+                         'upvotes', 'downvotes',
+                         'upvoterIds', 'downvoterIds',
+                         'timestamp'
+                       ])
+                    // Sanity-check field types / lengths on create.
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.title.size() <= 100
+                    && request.resource.data.description is string
+                    && request.resource.data.description.size() > 0
+                    && request.resource.data.description.size() <= 500
+                    // Vote counters must start at zero.
+                    && request.resource.data.upvotes   == 0
+                    && request.resource.data.downvotes == 0;
+
+      allow update: if isAuthor() || isVoteUpdate();
+
+      allow delete: if isAuthor();
+    }
+
+    // ── Catch-all deny ───────────────────────────────────────────────────────
+    //
+    // Any collection not explicitly matched above is denied by default.
+    // This rule makes the intent explicit and guards against future collections
+    // that are added without corresponding rules.
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

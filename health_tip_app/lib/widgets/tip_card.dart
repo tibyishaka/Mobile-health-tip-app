@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/health_tip.dart';
-import '../app_theme.dart';
 
 class TipCard extends StatelessWidget {
   final HealthTip tip;

@@ -25,6 +25,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'showGettingStarted': false,
           'onboardingCompletedAt': FieldValue.serverTimestamp(),
+          'interests': _selectedKeys.toList(),
         }, SetOptions(merge: true));
       }
 
@@ -89,7 +90,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
               Text(
                 l.selectInterests,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -98,7 +99,7 @@ class _GettingStartedScreenState extends State<GettingStartedScreen> {
                 l.chooseTopicsDesc,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 8,
+                  fontSize: 14,
                   color: Colors.grey[700],
                   fontWeight: FontWeight.w500,
                 ),

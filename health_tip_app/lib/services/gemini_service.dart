@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:health_tip_app/models/health_tip.dart';
@@ -86,8 +87,8 @@ Example:
         try {
           jsonList = jsonDecode(cleanText);
         } catch (e) {
-          print('JSON Decode Error: $e');
-          print('Gemini Output was: $textResults');
+          debugPrint('JSON Decode Error: $e');
+          debugPrint('Gemini Output was: $textResults');
           return [];
         }
 
@@ -99,7 +100,7 @@ Example:
           i++;
 
           return HealthTip(
-            id: 'gemini_${DateTime.now().millisecondsSinceEpoch}_${item["title"].hashCode}',
+            id: 'gemini_${category.name}_${(item["title"] as String).hashCode.abs()}',
             title: item['title'] ?? 'Health Tip',
             description: item['description'] ?? '',
             imageAsset: assignedImage,
@@ -109,8 +110,8 @@ Example:
       }
       return [];
     } catch (e, stacktrace) {
-      print('Error generating tips from Gemini: $e');
-      print('Stacktrace: $stacktrace');
+      debugPrint('Error generating tips from Gemini: $e');
+      debugPrint('Stacktrace: $stacktrace');
       return [];
     }
   }

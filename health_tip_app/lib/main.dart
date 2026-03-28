@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:health_tip_app/l10n/app_localizations.dart';
@@ -188,7 +189,22 @@ class _AppShell extends StatelessWidget {
                 '/stress-management': (context) =>
                     const StressManagementScreen(),
               },
-              home: const LoginScreen(),
+              // Auth-aware home: skip the login screen for already-signed-in users.
+              home: StreamBuilder<User?>(
+                stream: FirebaseAuth.instance.authStateChanges(),
+                builder: (context, snapshot) {
+                  // Still resolving — show a neutral splash
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const _SplashScreen();
+                  }
+                  // No user → show login
+                  if (snapshot.data == null) {
+                    return const LoginScreen();
+                  }
+                  // User is logged in → check onboarding flag
+                  return _AuthenticatedRouter(user: snapshot.data!);
+                },
+              ),
             );
           },
         );
@@ -196,6 +212,74 @@ class _AppShell extends StatelessWidget {
     );
   }
 }
+
+// ── Splash shown while auth state is resolving ────────────────────────────────
+
+class _SplashScreen extends StatelessWidget {
+  const _SplashScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator(color: Color(0xFF4CAF82))),
+    );
+  }
+}
+
+// ── Routes already-authenticated users past the login screen ─────────────────
+//
+// Checks Firestore for the `showGettingStarted` flag so users who signed up
+// but closed the app before completing onboarding are still directed there.
+
+class _AuthenticatedRouter extends StatefulWidget {
+  const _AuthenticatedRouter({required this.user});
+
+  final User user;
+
+  @override
+  State<_AuthenticatedRouter> createState() => _AuthenticatedRouterState();
+}
+
+class _AuthenticatedRouterState extends State<_AuthenticatedRouter> {
+  late Future<Widget> _destinationFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _destinationFuture = _resolveDestination();
+  }
+
+  Future<Widget> _resolveDestination() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user.uid)
+          .get();
+      final data = doc.data();
+      if (data?['showGettingStarted'] == true) {
+        return const GettingStartedScreen();
+      }
+    } catch (_) {
+      // If Firestore is unreachable, default to main screen.
+    }
+    return const MainScreen();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Widget>(
+      future: _destinationFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const _SplashScreen();
+        }
+        return snapshot.data ?? const MainScreen();
+      },
+    );
+  }
+}
+
+// ── Auto-logout on app close (mobile only) ────────────────────────────────────
 
 class _AutoLogoutOnExit extends StatefulWidget {
   const _AutoLogoutOnExit({required this.child});
@@ -242,7 +326,9 @@ class _AutoLogoutOnExitState extends State<_AutoLogoutOnExit>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached) {
+    // `detached` fires reliably on Android; `paused` covers iOS app-close.
+    if (state == AppLifecycleState.detached ||
+        state == AppLifecycleState.paused) {
       _signOutIfNeeded();
     }
   }
