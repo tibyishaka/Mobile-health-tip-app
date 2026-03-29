@@ -1,6 +1,6 @@
 # Mobile Health Tip App
 
-A Flutter mobile app that helps users discover practical wellness advice across six health categories: Nutrition, Sleep, Fitness, Mental Health, Stress Management, and Mindfulness. The app combines curated static content, AI-generated tips powered by Google Gemini, and a community-driven sharing board — all wrapped in a clean, adaptive green-themed UI with full dark mode and multi-language support.
+A Flutter mobile app that helps users discover practical wellness advice across six health categories: Nutrition, Sleep, Fitness, Mental Health, Stress Management, and Mindfulness. The app combines curated static content, AI-generated tips powered by Google Gemini, and a community-driven sharing board like all wrapped in a clean, adapting a green-themed UI with full dark mode and multi-language support.
 
 ---
 
@@ -91,34 +91,34 @@ Both are listened to by `MaterialApp` directly, so theme and language changes ta
 Mobile-health-tip-app/
 └── health_tip_app/
     ├── lib/
-    │   ├── main.dart                        # App entry point, Firebase init, locale migration
-    │   ├── app_theme.dart                   # Color palette, light/dark ColorSchemes, ValueNotifier<ThemeMode>
-    │   ├── app_locale.dart                  # ValueNotifier<Locale>
-    │   ├── firebase_options.dart            # Auto-generated Firebase config
+    │   ├── main.dart                        
+    │   ├── app_theme.dart                 
+    │   ├── app_locale.dart                  
+    │   ├── firebase_options.dart           
     │   │
     │   ├── models/
-    │   │   └── health_tip.dart              # HealthTip entity + TipCategory enum
+    │   │   └── health_tip.dart              
     │   │
     │   ├── providers/
-    │   │   └── tip_provider.dart            # Favourites state + Gemini tip cache
+    │   │   └── tip_provider.dart            
     │   │
     │   ├── services/
-    │   │   ├── gemini_service.dart          # Google Gemini API integration
-    │   │   └── notification_service.dart    # Daily local push notifications
+    │   │   ├── gemini_service.dart          
+    │   │   └── notification_service.dart    
     │   │
     │   ├── data/
-    │   │   └── tip_repository.dart          # Static localised tips for all categories
+    │   │   └── tip_repository.dart          
     │   │
     │   ├── screens/
-    │   │   ├── login_screen.dart            # Email + Google sign-in, password reset
-    │   │   ├── signup_screen.dart           # Email + Google sign-up, email verification
-    │   │   ├── getting_started_screen.dart  # Interest selection onboarding
-    │   │   ├── main_screen.dart             # Bottom nav shell (IndexedStack)
-    │   │   ├── home_screen.dart             # Featured wellness article cards
-    │   │   ├── discover_screen.dart         # Topic grid with fuzzy search
-    │   │   ├── daily_tips_screen.dart       # Tip of the day + notification toggle
-    │   │   ├── community_tips_screen.dart   # Firestore-backed community board
-    │   │   ├── settings_screen.dart         # Profile, theme, language, logout
+    │   │   ├── login_screen.dart            
+    │   │   ├── signup_screen.dart           
+    │   │   ├── getting_started_screen.dart  
+    │   │   ├── main_screen.dart             
+    │   │   ├── home_screen.dart            
+    │   │   ├── discover_screen.dart         
+    │   │   ├── daily_tips_screen.dart       
+    │   │   ├── community_tips_screen.dart   
+    │   │   ├── settings_screen.dart         
     │   │   ├── fitness_screen.dart
     │   │   ├── mental_health_screen.dart
     │   │   ├── stress_management_screen.dart
@@ -127,35 +127,35 @@ Mobile-health-tip-app/
     │   │   └── mindfulness_screen.dart
     │   │
     │   ├── widgets/
-    │   │   ├── tip_card.dart                # Standard tip list card
-    │   │   ├── topic_tip_card.dart          # Category-specific tip card
-    │   │   ├── unified_tip_card.dart        # Shared card used across screens
-    │   │   ├── trending_community_tips.dart # Community tip highlights widget
-    │   │   └── custom_search_bar.dart       # Reusable search input
+    │   │   ├── tip_card.dart                
+    │   │   ├── topic_tip_card.dart          
+    │   │   ├── unified_tip_card.dart        
+    │   │   ├── trending_community_tips.dart 
+    │   │   └── custom_search_bar.dart      
     │   │
     │   └── l10n/
-    │       ├── app_en.arb                   # English strings
-    │       ├── app_fr.arb                   # French strings
-    │       ├── app_es.arb                   # Spanish strings
-    │       ├── app_localizations.dart       # Generated base class
+    │       ├── app_en.arb                   
+    │       ├── app_fr.arb                   
+    │       ├── app_es.arb                  
+    │       ├── app_localizations.dart       
     │       ├── app_localizations_en.dart
     │       ├── app_localizations_es.dart
     │       └── app_localizations_fr.dart
     │
     ├── assets/
     │   └── images/
-    │       ├── fitness/                     # WebP images for fitness tips
-    │       ├── mental-health/               # WebP images for mental health tips
-    │       └── stress/                      # WebP images for stress tips
+    │       ├── fitness/                     
+    │       ├── mental-health/               
+    │       └── stress/                     
     │
-    ├── android/                             # Android platform code + google-services.json
-    ├── ios/                                 # iOS platform code
-    ├── linux/                               # Linux desktop runner
-    ├── macos/                               # macOS desktop runner
+    ├── android/                             
+    ├── ios/                                 
+    ├── linux/                              
+    ├── macos/                               
     ├── pubspec.yaml
-    ├── l10n.yaml                            # Flutter gen-l10n configuration
+    ├── l10n.yaml                            
     ├── analysis_options.yaml
-    └── .env                                 # GEMINI_API_KEY (not committed to VCS)
+    └── .env                                 
 ```
 
 ---
@@ -192,8 +192,8 @@ Mobile-health-tip-app/
 
 1. **Clone the repository:**
    ```
-   git clone https://github.com/your-username/Mobile-health-tip-app.git
-   cd Mobile-health-tip-app/health_tip_app
+   git clone https://github.com/tibyishaka/Mobile-health-tip-app.git
+   cd Mobile-health-tip-app\health_tip_app
    ```
 
 2. **Install dependencies:**
@@ -209,7 +209,7 @@ Mobile-health-tip-app/
 4. **Set up your Gemini API key:**
    Create a `.env` file in the `health_tip_app/` root:
    ```
-   GEMINI_API_KEY=your_api_key_here
+   GEMINI_API_KEY=our_api_key_here
    ```
 
 5. **Run the app:**
